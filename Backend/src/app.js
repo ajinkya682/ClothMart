@@ -10,6 +10,7 @@ const orderRoutes = require("./routes/order.route");
 const reviewRoutes = require("./routes/review.route");
 const couponRoutes = require("./routes/coupon.route");
 const paymentRoutes = require("./routes/payment.route");
+const analyticsRoutes = require("./routes/analytics.route");
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/payment", paymentRoutes);
+app.use("/api/analytics", analyticsRoutes);
 
 // ─── TEST ROUTE ───────────────────────────────
 app.get("/", (req, res) => {
