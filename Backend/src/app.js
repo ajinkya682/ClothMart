@@ -15,12 +15,26 @@ const analyticsRoutes = require("./routes/analytics.route");
 const app = express();
 
 // ─── MIDDLEWARE ───────────────────────────────
+
+// ✅ REPLACE WITH THIS
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:5173",
-    credentials: true, // ← allows cookies to be sent from React
+    origin: function (origin, callback) {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "https://clothmart.vercel.app",
+      ];
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
