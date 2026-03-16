@@ -1,7 +1,60 @@
 const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+require("dotenv").config();
+
+const authRoutes = require("./routes/auth.route");
 
 const app = express();
 
+// ─── MIDDLEWARE ───────────────────────────────
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
+    credentials: true, // ← allows cookies to be sent from React
+  }),
+);
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
+
+// ─── ROUTES ──────────────────────────────────
+app.use("/api/auth", authRoutes);
+
+// ─── TEST ROUTE ───────────────────────────────
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "✅ ClothMart API is running!",
+    version: "1.0.0",
+    endpoints: {
+      register: "POST   /api/auth/register",
+      login: "POST   /api/auth/login",
+      logout: "POST   /api/auth/logout",
+      getProfile: "GET    /api/auth/me",
+      updateProfile: "PUT    /api/auth/me",
+      changePassword: "PUT    /api/auth/password",
+      addAddress: "POST   /api/auth/address",
+      deleteAddress: "DELETE /api/auth/address/:addressId",
+    },
+  });
+});
+
+// ─── 404 HANDLER ─────────────────────────────
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `Route ${req.originalUrl} not found`,
+  });
+});
+
+// ─── GLOBAL ERROR HANDLER ────────────────────
+app.use((err, req, res, next) => {
+  console.error("Global error:", err.message);
+  res.status(err.status || 500).json({
+    success: false,
+    message: err.message || "Internal server error",
+  });
+});
 
 module.exports = app;
