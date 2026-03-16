@@ -5,6 +5,11 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/auth.route");
 const storeRoutes = require("./routes/store.route");
+const productRoutes = require("./routes/product.route");
+const orderRoutes = require("./routes/order.route");
+const reviewRoutes = require("./routes/review.route");
+const couponRoutes = require("./routes/coupon.route");
+const paymentRoutes = require("./routes/payment.route");
 
 const app = express();
 
@@ -22,6 +27,11 @@ app.use(cookieParser());
 // ─── ROUTES ──────────────────────────────────
 app.use("/api/auth", authRoutes);
 app.use("/api/stores", storeRoutes);
+app.use("/api/products", productRoutes);
+app.use("/api/orders", orderRoutes);
+app.use("/api/reviews", reviewRoutes);
+app.use("/api/coupons", couponRoutes);
+app.use("/api/payment", paymentRoutes);
 
 // ─── TEST ROUTE ───────────────────────────────
 app.get("/", (req, res) => {
