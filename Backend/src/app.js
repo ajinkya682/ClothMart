@@ -4,6 +4,7 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const authRoutes = require("./routes/auth.route");
+const storeRoutes = require("./routes/store.route");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(cookieParser());
 
 // ─── ROUTES ──────────────────────────────────
 app.use("/api/auth", authRoutes);
+app.use("/api/stores", storeRoutes);
 
 // ─── TEST ROUTE ───────────────────────────────
 app.get("/", (req, res) => {
