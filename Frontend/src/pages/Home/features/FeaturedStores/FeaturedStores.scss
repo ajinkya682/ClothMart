@@ -1,0 +1,283 @@
+@use "../../../../styles/base/variables" as v;
+@use "../../../../styles/base/mixins" as m;
+
+.featured-stores {
+  padding-block: v.$sp-24;
+  background: v.$bg-alt;
+
+  @include m.below-md {
+    padding-block: v.$sp-16;
+  }
+
+  &__inner {
+    @include m.container;
+  }
+
+  &__top {
+    @include m.flex-between;
+    margin-bottom: v.$sp-12;
+
+    @include m.below-md {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: v.$sp-4;
+    }
+  }
+
+  &__label {
+    font-family: v.$font-mono;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: v.$yellow-hover;
+    background: v.$yellow-soft;
+    border: 1px solid v.$yellow-border;
+    padding: 4px 12px;
+    border-radius: v.$r-full;
+    display: inline-block;
+    margin-bottom: v.$sp-3;
+  }
+
+  &__heading {
+    font-family: v.$font-display;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    color: v.$text-primary;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  &__viewall {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$sp-2;
+    font-size: 13px;
+    font-weight: 500;
+    color: v.$text-secondary;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: v.$r-sm;
+    transition: v.$t-fast;
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      color: v.$text-primary;
+      background: darken(v.$bg-alt, 4%);
+      svg {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: v.$sp-6;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: v.$sp-20;
+    color: v.$text-muted;
+    font-size: 16px;
+  }
+}
+
+// ── Store Card ────────────────────────────────────────────────────────────────
+.store-card {
+  display: block;
+  background: v.$bg-card;
+  border: 1px solid darken(v.$bg-alt, 4%);
+  border-radius: v.$r-xl;
+  overflow: hidden;
+  text-decoration: none;
+  transition: v.$t-base;
+
+  &:hover {
+    box-shadow: v.$shadow-xl;
+    transform: translateY(-6px);
+    border-color: darken(v.$bg-alt, 8%);
+
+    .store-card__banner img {
+      transform: scale(1.06);
+    }
+    .store-card__arrow {
+      opacity: 1;
+      transform: translate(3px, -3px);
+    }
+  }
+
+  // banner
+  &__banner {
+    height: 170px;
+    overflow: hidden;
+    background: darken(v.$bg-alt, 4%);
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.55s ease;
+    }
+
+    &-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 52px;
+      background: linear-gradient(135deg, darken(v.$bg-alt, 5%), v.$bg-alt);
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: v.$sp-3;
+    right: v.$sp-3;
+    font-family: v.$font-mono;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: rgba(v.$black, 0.62);
+    color: v.$white;
+    padding: 3px 10px;
+    border-radius: v.$r-full;
+    backdrop-filter: blur(6px);
+  }
+
+  // body
+  &__body {
+    padding: v.$sp-5;
+  }
+
+  &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: v.$sp-3;
+  }
+
+  &__logo {
+    width: 46px;
+    height: 46px;
+    border-radius: v.$r-md;
+    object-fit: cover;
+    border: 2px solid v.$bg-alt;
+    background: v.$white;
+    margin-top: -38px;
+    position: relative;
+    z-index: 1;
+    box-shadow: v.$shadow-sm;
+  }
+
+  &__arrow {
+    font-size: 18px;
+    color: v.$text-muted;
+    opacity: 0;
+    transition: v.$t-base;
+  }
+
+  &__name {
+    font-family: v.$font-body;
+    font-size: 16px;
+    font-weight: 600;
+    color: v.$text-primary;
+    margin-bottom: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__desc {
+    font-size: 13px;
+    color: v.$text-secondary;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: v.$sp-4;
+    line-height: 1.5;
+  }
+
+  &__footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: v.$sp-3;
+    border-top: 1px solid darken(v.$bg-alt, 3%);
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: v.$text-primary;
+  }
+
+  &__star {
+    color: v.$yellow;
+  }
+
+  &__city {
+    font-size: 12px;
+    color: v.$text-muted;
+  }
+}
+
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+.store-skeleton {
+  border-radius: v.$r-xl;
+  overflow: hidden;
+  border: 1px solid darken(v.$bg-alt, 4%);
+
+  &__banner {
+    height: 170px;
+    background: linear-gradient(
+      90deg,
+      v.$bg-alt 25%,
+      darken(v.$bg-alt, 4%) 50%,
+      v.$bg-alt 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  &__body {
+    padding: v.$sp-5;
+  }
+
+  &__line {
+    border-radius: v.$r-sm;
+    background: linear-gradient(
+      90deg,
+      v.$bg-alt 25%,
+      darken(v.$bg-alt, 4%) 50%,
+      v.$bg-alt 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+    margin-bottom: v.$sp-3;
+
+    &--sm {
+      height: 12px;
+      width: 60%;
+    }
+    &--md {
+      height: 14px;
+      width: 85%;
+    }
+    &--lg {
+      height: 14px;
+      width: 100%;
+    }
+  }
+}

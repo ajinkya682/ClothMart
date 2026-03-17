@@ -1,0 +1,10 @@
+@use "../../styles/base/variables" as v;
+@use "../../styles/base/mixins" as m;
+
+.home {
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  // each section handles its own background and spacing
+  // this file only handles the page wrapper
+}

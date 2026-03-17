@@ -1,0 +1,160 @@
+@use "../../styles/base/variables" as v;
+@use "../../styles/base/mixins" as m;
+
+.footer {
+  background: v.$bg-dark;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+
+  &__top {
+    @include m.container;
+    padding-top: v.$sp-16;
+    padding-bottom: v.$sp-12;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: v.$sp-10;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__brand {
+  }
+
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: v.$sp-2;
+    text-decoration: none;
+    margin-bottom: v.$sp-5;
+  }
+
+  &__logo-mark {
+    width: 34px;
+    height: 34px;
+    background: v.$yellow;
+    border-radius: v.$r-sm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: v.$font-display;
+    font-size: 17px;
+    font-weight: 800;
+    color: v.$black;
+    flex-shrink: 0;
+  }
+
+  &__logo-text {
+    font-family: v.$font-display;
+    font-size: 20px;
+    font-weight: 800;
+    color: v.$white;
+    letter-spacing: -0.01em;
+  }
+
+  &__tagline {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.38);
+    line-height: 1.7;
+    max-width: 280px;
+    margin-bottom: v.$sp-6;
+  }
+
+  &__socials {
+    display: flex;
+    gap: v.$sp-2;
+  }
+
+  &__social {
+    width: 36px;
+    height: 36px;
+    border-radius: v.$r-sm;
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 14px;
+    text-decoration: none;
+    transition: v.$t-fast;
+
+    &:hover {
+      background: v.$yellow;
+      color: v.$black;
+      border-color: v.$yellow;
+    }
+  }
+
+  &__col-title {
+    font-family: v.$font-mono;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: v.$sp-5;
+  }
+
+  &__col-links {
+    display: flex;
+    flex-direction: column;
+    gap: v.$sp-3;
+  }
+
+  &__col-link {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.48);
+    text-decoration: none;
+    transition: v.$t-fast;
+    &:hover {
+      color: v.$white;
+    }
+  }
+
+  &__bottom {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  &__bottom-inner {
+    @include m.container;
+    padding-top: v.$sp-5;
+    padding-bottom: v.$sp-5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: v.$sp-4;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+
+  &__copy {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.28);
+  }
+
+  &__copy-accent {
+    color: v.$yellow;
+  }
+
+  &__legal {
+    display: flex;
+    gap: v.$sp-5;
+  }
+
+  &__legal-link {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.28);
+    text-decoration: none;
+    transition: v.$t-fast;
+    &:hover {
+      color: rgba(255, 255, 255, 0.6);
+    }
+  }
+}

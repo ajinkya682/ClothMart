@@ -1,0 +1,264 @@
+@use "variables" as v;
+
+// ─── RESPONSIVE ──────────────────────────────────────────────────────────────
+@mixin sm {
+  @media (min-width: #{v.$bp-sm}) {
+    @content;
+  }
+}
+@mixin md {
+  @media (min-width: #{v.$bp-md}) {
+    @content;
+  }
+}
+@mixin lg {
+  @media (min-width: #{v.$bp-lg}) {
+    @content;
+  }
+}
+@mixin xl {
+  @media (min-width: #{v.$bp-xl}) {
+    @content;
+  }
+}
+
+@mixin below-sm {
+  @media (max-width: #{v.$bp-sm}) {
+    @content;
+  }
+}
+@mixin below-md {
+  @media (max-width: #{v.$bp-md}) {
+    @content;
+  }
+}
+@mixin below-lg {
+  @media (max-width: #{v.$bp-lg}) {
+    @content;
+  }
+}
+
+// ─── LAYOUT ──────────────────────────────────────────────────────────────────
+@mixin container {
+  width: 100%;
+  max-width: v.$max-width;
+  margin-inline: auto;
+  padding-inline: v.$gutter;
+
+  @include below-md {
+    padding-inline: v.$gutter-mobile;
+  }
+}
+
+@mixin section-padding {
+  padding-block: v.$sp-24;
+
+  @include below-md {
+    padding-block: v.$sp-16;
+  }
+}
+
+// ─── FLEXBOX ─────────────────────────────────────────────────────────────────
+@mixin flex($dir: row, $align: center, $justify: flex-start, $gap: 0) {
+  display: flex;
+  flex-direction: $dir;
+  align-items: $align;
+  justify-content: $justify;
+  @if $gap != 0 {
+    gap: $gap;
+  }
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-col-start {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+// ─── GRID ────────────────────────────────────────────────────────────────────
+@mixin auto-grid($min: 260px, $gap: v.$sp-6) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax($min, 1fr));
+  gap: $gap;
+}
+
+@mixin fixed-grid($cols, $gap: v.$sp-6) {
+  display: grid;
+  grid-template-columns: repeat($cols, 1fr);
+  gap: $gap;
+}
+
+// ─── TYPOGRAPHY ──────────────────────────────────────────────────────────────
+@mixin display($size: 72px) {
+  font-family: v.$font-display;
+  font-size: $size;
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: -0.02em;
+}
+
+@mixin heading($size: 32px) {
+  font-family: v.$font-display;
+  font-size: $size;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+
+@mixin label {
+  font-family: v.$font-mono;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+@mixin clamp-text($lines: 2) {
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+@mixin truncate {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+// ─── BUTTONS ─────────────────────────────────────────────────────────────────
+@mixin btn-reset {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: v.$sp-2;
+  font-family: v.$font-body;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.03em;
+  border: none;
+  border-radius: v.$r-sm;
+  cursor: pointer;
+  text-decoration: none;
+  transition: v.$t-base;
+
+  &:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+@mixin btn-primary {
+  @include btn-reset;
+  background: v.$yellow;
+  color: v.$black;
+  padding: 13px 28px;
+
+  &:hover {
+    background: v.$yellow-hover;
+    transform: translateY(-1px);
+    box-shadow: v.$shadow-yellow;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@mixin btn-dark {
+  @include btn-reset;
+  background: v.$black;
+  color: v.$white;
+  padding: 13px 28px;
+
+  &:hover {
+    background: #1f1f24;
+    transform: translateY(-1px);
+    box-shadow: v.$shadow-lg;
+  }
+}
+
+@mixin btn-outline {
+  @include btn-reset;
+  background: transparent;
+  color: v.$text-primary;
+  padding: 12px 28px;
+  border: 1.5px solid darken(v.$bg-alt, 8%);
+
+  &:hover {
+    background: v.$bg-alt;
+    border-color: v.$text-muted;
+  }
+}
+
+@mixin btn-ghost {
+  @include btn-reset;
+  background: transparent;
+  color: v.$text-secondary;
+  padding: 10px 16px;
+
+  &:hover {
+    background: v.$bg-alt;
+    color: v.$text-primary;
+  }
+}
+
+// ─── CARDS ───────────────────────────────────────────────────────────────────
+@mixin card($pad: v.$sp-6) {
+  background: v.$bg-card;
+  border-radius: v.$r-lg;
+  padding: $pad;
+  border: 1px solid darken(v.$bg-alt, 4%);
+  box-shadow: v.$shadow-xs;
+  transition: v.$t-base;
+}
+
+@mixin card-hover {
+  &:hover {
+    box-shadow: v.$shadow-lg;
+    transform: translateY(-4px);
+    border-color: darken(v.$bg-alt, 10%);
+  }
+}
+
+// ─── VISUAL EFFECTS ──────────────────────────────────────────────────────────
+@mixin overlay($opacity: 0.55) {
+  position: absolute;
+  inset: 0;
+  background: rgba(v.$black, $opacity);
+}
+
+@mixin shimmer {
+  background: linear-gradient(
+    90deg,
+    v.$bg-alt 25%,
+    darken(v.$bg-alt, 4%) 50%,
+    v.$bg-alt 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s ease-in-out infinite;
+}
+
+@mixin section-header-label {
+  @include label;
+  color: v.$yellow-hover;
+  background: v.$yellow-soft;
+  border: 1px solid v.$yellow-border;
+  padding: 4px 12px;
+  border-radius: v.$r-full;
+  display: inline-block;
+  margin-bottom: v.$sp-4;
+}

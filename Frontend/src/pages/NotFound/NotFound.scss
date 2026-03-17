@@ -1,0 +1,58 @@
+@use "../../styles/base/variables" as v;
+@use "../../styles/base/mixins" as m;
+
+.not-found {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: v.$bg-dark;
+
+  &__inner {
+    text-align: center;
+    padding: v.$sp-10;
+  }
+
+  &__code {
+    display: block;
+    font-family: v.$font-display;
+    font-size: 120px;
+    font-weight: 800;
+    color: v.$yellow;
+    line-height: 1;
+    margin-bottom: v.$sp-4;
+  }
+
+  &__title {
+    font-family: v.$font-display;
+    font-size: 36px;
+    color: v.$white;
+    margin-bottom: v.$sp-4;
+  }
+
+  &__text {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.42);
+    margin-bottom: v.$sp-10;
+  }
+
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    background: v.$yellow;
+    color: v.$black;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 14px 32px;
+    border-radius: v.$r-sm;
+    text-decoration: none;
+    transition: v.$t-base;
+
+    &:hover {
+      background: v.$yellow-hover;
+      transform: translateY(-2px);
+    }
+  }
+}

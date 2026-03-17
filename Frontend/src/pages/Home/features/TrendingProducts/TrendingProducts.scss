@@ -1,0 +1,329 @@
+@use "../../../../styles/base/variables" as v;
+@use "../../../../styles/base/mixins" as m;
+
+.trending {
+  padding-block: v.$sp-24;
+  background: v.$bg-main;
+
+  @include m.below-md {
+    padding-block: v.$sp-16;
+  }
+
+  &__inner {
+    @include m.container;
+  }
+
+  &__top {
+    @include m.flex-between;
+    margin-bottom: v.$sp-12;
+
+    @include m.below-md {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: v.$sp-4;
+    }
+  }
+
+  &__label {
+    font-family: v.$font-mono;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: v.$yellow-hover;
+    background: v.$yellow-soft;
+    border: 1px solid v.$yellow-border;
+    padding: 4px 12px;
+    border-radius: v.$r-full;
+    display: inline-block;
+    margin-bottom: v.$sp-3;
+  }
+
+  &__heading {
+    font-family: v.$font-display;
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    color: v.$text-primary;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  &__viewall {
+    display: inline-flex;
+    align-items: center;
+    gap: v.$sp-2;
+    font-size: 13px;
+    font-weight: 500;
+    color: v.$text-secondary;
+    text-decoration: none;
+    padding: 8px 14px;
+    border-radius: v.$r-sm;
+    transition: v.$t-fast;
+
+    svg {
+      transition: transform 0.2s ease;
+    }
+
+    &:hover {
+      color: v.$text-primary;
+      background: v.$bg-alt;
+      svg {
+        transform: translateX(4px);
+      }
+    }
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: v.$sp-5;
+  }
+}
+
+// ── Product Card ──────────────────────────────────────────────────────────────
+.prod-card {
+  background: v.$bg-card;
+  border: 1px solid darken(v.$bg-alt, 4%);
+  border-radius: v.$r-xl;
+  overflow: hidden;
+  transition: v.$t-base;
+
+  &:hover {
+    box-shadow: v.$shadow-xl;
+    transform: translateY(-5px);
+    border-color: darken(v.$bg-alt, 8%);
+
+    .prod-card__img-wrap img {
+      transform: scale(1.07);
+    }
+    .prod-card__quick {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  // image
+  &__img-wrap {
+    height: 290px;
+    overflow: hidden;
+    background: v.$bg-alt;
+    position: relative;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    &-placeholder {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+      background: v.$bg-alt;
+    }
+  }
+
+  &__img-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 72px;
+  }
+
+  // discount badge
+  &__discount {
+    position: absolute;
+    top: v.$sp-3;
+    left: v.$sp-3;
+    font-family: v.$font-mono;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    background: v.$yellow;
+    color: v.$black;
+    padding: 3px 9px;
+    border-radius: v.$r-xs;
+  }
+
+  // wishlist button
+  &__wish {
+    position: absolute;
+    top: v.$sp-3;
+    right: v.$sp-3;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.85);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    backdrop-filter: blur(4px);
+
+    &:hover {
+      transform: scale(1.15);
+      background: v.$white-pure;
+    }
+    &--active {
+      color: v.$error;
+    }
+  }
+
+  // quick add (slides up on hover)
+  &__quick {
+    position: absolute;
+    bottom: v.$sp-3;
+    left: v.$sp-3;
+    right: v.$sp-3;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: v.$t-base;
+  }
+
+  &__quick-btn {
+    width: 100%;
+    padding: 11px;
+    background: v.$black;
+    color: v.$white;
+    font-family: v.$font-body;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    border: none;
+    border-radius: v.$r-md;
+    cursor: pointer;
+    transition: v.$t-fast;
+
+    &:hover {
+      background: #1f1f24;
+    }
+  }
+
+  // body
+  &__body {
+    display: block;
+    padding: v.$sp-4 v.$sp-5 v.$sp-5;
+    text-decoration: none;
+  }
+
+  &__store {
+    font-family: v.$font-mono;
+    font-size: 10px;
+    color: v.$text-muted;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  &__name {
+    font-size: 15px;
+    font-weight: 600;
+    color: v.$text-primary;
+    display: -webkit-box;
+    webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: v.$sp-4;
+    line-height: 1.4;
+  }
+
+  &__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__price {
+    display: flex;
+    align-items: baseline;
+    gap: v.$sp-2;
+  }
+
+  &__price-now {
+    font-size: 18px;
+    font-weight: 700;
+    color: v.$text-primary;
+  }
+
+  &__price-was {
+    font-size: 13px;
+    color: v.$text-muted;
+    text-decoration: line-through;
+  }
+
+  &__rating {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 12px;
+    font-weight: 600;
+    color: v.$text-secondary;
+
+    span {
+      color: v.$yellow;
+      font-size: 13px;
+    }
+  }
+}
+
+// ── Skeleton ──────────────────────────────────────────────────────────────────
+.prod-skeleton {
+  border-radius: v.$r-xl;
+  overflow: hidden;
+  border: 1px solid darken(v.$bg-alt, 4%);
+
+  &__img {
+    height: 290px;
+    background: linear-gradient(
+      90deg,
+      v.$bg-alt 25%,
+      darken(v.$bg-alt, 4%) 50%,
+      v.$bg-alt 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+
+  &__body {
+    padding: v.$sp-4 v.$sp-5 v.$sp-5;
+  }
+
+  &__line {
+    border-radius: v.$r-sm;
+    background: linear-gradient(
+      90deg,
+      v.$bg-alt 25%,
+      darken(v.$bg-alt, 4%) 50%,
+      v.$bg-alt 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+    margin-bottom: v.$sp-3;
+
+    &--sm {
+      height: 11px;
+      width: 50%;
+    }
+    &--md {
+      height: 13px;
+      width: 80%;
+    }
+    &--lg {
+      height: 13px;
+      width: 100%;
+    }
+  }
+}

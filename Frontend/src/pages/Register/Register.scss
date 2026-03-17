@@ -1,0 +1,791 @@
+@use "../../styles/base/variables" as v;
+@use "../../styles/base/mixins" as m;
+
+// ─── PAGE LAYOUT ──────────────────────────────────────────────────────────────
+.register-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  @include m.below-lg {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ─── LEFT PANEL ───────────────────────────────────────────────────────────────
+
+.register-panel {
+  &--left {
+    background: v.$black;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: stretch;
+
+    @include m.below-lg {
+      display: none;
+    }
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 207, 64, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 207, 64, 0.04) 1px, transparent 1px);
+      background-size: 48px 48px;
+      pointer-events: none;
+    }
+  }
+
+  &__inner {
+    position: relative;
+    z-index: 1;
+    padding: v.$sp-24 v.$sp-12;
+    @include m.flex(column, flex-start, flex-start, v.$sp-10);
+    width: 100%;
+  }
+
+  &__deco1 {
+    position: absolute;
+    top: -120px;
+    right: -120px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 207, 64, 0.12) 0%,
+      transparent 65%
+    );
+    pointer-events: none;
+  }
+
+  &__deco2 {
+    position: absolute;
+    bottom: -80px;
+    left: -80px;
+    width: 320px;
+    height: 320px;
+    background: radial-gradient(
+      circle,
+      rgba(255, 207, 64, 0.06) 0%,
+      transparent 70%
+    );
+    pointer-events: none;
+  }
+
+  &--right {
+    background: v.$bg-main;
+    overflow-y: auto;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: v.$sp-10 v.$sp-8;
+
+    @include m.below-md {
+      padding: v.$sp-6 v.$sp-5;
+    }
+  }
+}
+
+// ─── LOGO ─────────────────────────────────────────────────────────────────────
+.register-logo {
+  @include m.flex(row, center, flex-start, v.$sp-3);
+  text-decoration: none;
+
+  &__mark {
+    width: 40px;
+    height: 40px;
+    background: v.$yellow;
+    border-radius: v.$r-sm;
+    @include m.flex-center;
+    font-family: v.$font-display;
+    font-size: 15px;
+    font-weight: 900;
+    color: v.$black;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-family: v.$font-display;
+    font-size: 20px;
+    font-weight: 800;
+    color: v.$white;
+    letter-spacing: -0.01em;
+  }
+
+  &--mobile {
+    display: none;
+
+    @include m.below-lg {
+      display: flex;
+
+      .register-logo__name {
+        color: v.$text-primary;
+      }
+    }
+  }
+}
+
+// ─── LEFT PANEL: Pitch ────────────────────────────────────────────────────────
+.register-pitch {
+  @include m.flex(column, flex-start, flex-start, v.$sp-4);
+
+  &__title {
+    @include m.display(42px);
+    color: v.$white;
+    line-height: 1;
+    max-width: 380px;
+  }
+
+  &__sub {
+    font-size: 15px;
+    color: v.$text-muted;
+    line-height: 1.7;
+    max-width: 360px;
+  }
+}
+
+// ─── LEFT PANEL: Perks list ───────────────────────────────────────────────────
+.register-perks {
+  @include m.flex(column, flex-start, flex-start, v.$sp-3);
+
+  &__item {
+    @include m.flex(row, center, flex-start, v.$sp-3);
+    font-size: 14px;
+    color: v.$text-light;
+    animation: fadeLeft 0.4s ease both;
+  }
+
+  &__icon {
+    width: 22px;
+    height: 22px;
+    border-radius: v.$r-full;
+    background: rgba(255, 207, 64, 0.15);
+    border: 1px solid rgba(255, 207, 64, 0.25);
+    @include m.flex-center;
+    color: v.$yellow;
+    flex-shrink: 0;
+  }
+}
+
+// ─── RIGHT PANEL: Form wrapper ────────────────────────────────────────────────
+
+.register-form-wrap {
+  width: 100%;
+  max-width: 480px;
+  @include m.flex(column, stretch, flex-start, v.$sp-6);
+}
+
+// ─── TOP BAR ─────────────────────────────────────────────────────────────────
+.register-top {
+  @include m.flex-between;
+  margin-bottom: v.$sp-2;
+}
+
+.register-signin {
+  font-size: 13px;
+  color: v.$text-muted;
+
+  &__link {
+    color: v.$yellow-hover;
+    font-weight: 700;
+    text-decoration: none;
+    transition: v.$t-fast;
+
+    &:hover {
+      color: darken(v.$yellow-hover, 10%);
+      text-decoration: underline;
+    }
+  }
+}
+
+// ─── PROGRESS BAR ────────────────────────────────────────────────────────────
+.register-progress {
+  @include m.flex(column, stretch, flex-start, v.$sp-4);
+
+  &__bar {
+    height: 3px;
+    background: darken(v.$bg-alt, 6%);
+    border-radius: v.$r-full;
+    overflow: hidden;
+  }
+
+  &__fill {
+    height: 100%;
+    background: v.$yellow;
+    border-radius: v.$r-full;
+    transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  &__steps {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+    flex-wrap: wrap;
+    gap: v.$sp-3;
+  }
+}
+
+.register-step {
+  @include m.flex(row, center, flex-start, v.$sp-2);
+
+  &__circle {
+    width: 26px;
+    height: 26px;
+    border-radius: v.$r-full;
+    border: 2px solid darken(v.$bg-alt, 10%);
+    background: v.$bg-card;
+    @include m.flex-center;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: v.$font-display;
+    color: v.$text-muted;
+    transition: v.$t-base;
+    flex-shrink: 0;
+  }
+
+  &__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: v.$text-muted;
+    transition: v.$t-fast;
+  }
+
+  &--active {
+    .register-step__circle {
+      border-color: v.$yellow;
+      background: v.$yellow;
+      color: v.$black;
+    }
+    .register-step__label {
+      color: v.$text-primary;
+      font-weight: 700;
+    }
+  }
+
+  &--done {
+    .register-step__circle {
+      border-color: v.$success;
+      background: v.$success;
+      color: #fff;
+    }
+    .register-step__label {
+      color: v.$success;
+    }
+  }
+}
+
+// ─── FORM STEP WRAPPER ────────────────────────────────────────────────────────
+.register-form-step {
+  @include m.flex(column, stretch, flex-start, v.$sp-5);
+  animation: fadeUp 0.35s ease both;
+}
+
+// ─── FORM HEADER ─────────────────────────────────────────────────────────────
+.register-form-hd {
+  @include m.flex(column, flex-start, flex-start, v.$sp-2);
+
+  &__title {
+    @include m.heading(26px);
+    color: v.$text-primary;
+  }
+
+  &__sub {
+    font-size: 14px;
+    color: v.$text-muted;
+    line-height: 1.6;
+  }
+}
+
+// ─── ROLE TOGGLE ─────────────────────────────────────────────────────────────
+.role-toggle {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$sp-3;
+  padding: v.$sp-2;
+  background: v.$bg-alt;
+  border-radius: v.$r-lg;
+  border: 1px solid darken(v.$bg-alt, 6%);
+
+  &__btn {
+    @include m.flex(row, center, center, v.$sp-2);
+    padding: 12px v.$sp-4;
+    border-radius: v.$r-md;
+    border: 2px solid transparent;
+    background: transparent;
+    color: v.$text-secondary;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: v.$font-body;
+    cursor: pointer;
+    transition: v.$t-base;
+
+    svg {
+      flex-shrink: 0;
+    }
+
+    &:hover {
+      background: v.$bg-card;
+      color: v.$text-primary;
+    }
+
+    &--active {
+      background: v.$bg-card;
+      border-color: v.$yellow;
+      color: v.$black;
+      box-shadow: v.$shadow-sm;
+
+      svg {
+        color: v.$yellow-hover;
+      }
+    }
+  }
+}
+
+// ─── FORM GRID ────────────────────────────────────────────────────────────────
+.form-grid {
+  @include m.flex(column, stretch, flex-start, v.$sp-4);
+
+  &--two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: v.$sp-4;
+
+    @include m.below-sm {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+.form-section-label {
+  font-size: 11px;
+  font-weight: 700;
+  font-family: v.$font-display;
+  color: v.$text-muted;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding-bottom: v.$sp-1;
+  border-bottom: 1px solid v.$bg-alt;
+}
+
+// ─── FORM FIELDS ─────────────────────────────────────────────────────────────
+.form-field {
+  @include m.flex(column, stretch, flex-start, v.$sp-2);
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: v.$text-primary;
+  @include m.flex(row, center, flex-start, v.$sp-1);
+
+  &__req {
+    color: v.$error;
+    font-size: 14px;
+    line-height: 1;
+  }
+  &__opt {
+    color: v.$text-muted;
+    font-weight: 400;
+    font-size: 11px;
+  }
+}
+
+// Input
+.form-input-wrap {
+  position: relative;
+  @include m.flex(row, center, flex-start, 0);
+
+  &--error .form-input {
+    border-color: v.$error;
+    background: rgba(220, 38, 38, 0.03);
+  }
+  &--pwd .form-input {
+    padding-right: 44px;
+  }
+}
+
+.form-input-icon {
+  position: absolute;
+  left: 14px;
+  color: v.$text-muted;
+  @include m.flex-center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-input {
+  width: 100%;
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 6%);
+  border-radius: v.$r-md;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-family: v.$font-body;
+  color: v.$text-primary;
+  transition: v.$t-fast;
+
+  &--has-icon {
+    padding-left: 42px;
+  }
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: v.$yellow;
+    background: v.$bg-card;
+    box-shadow: 0 0 0 3px rgba(255, 207, 64, 0.12);
+  }
+}
+
+.form-input-eye {
+  position: absolute;
+  right: 13px;
+  background: none;
+  border: none;
+  color: v.$text-muted;
+  cursor: pointer;
+  padding: 4px;
+  border-radius: v.$r-xs;
+  @include m.flex-center;
+  transition: v.$t-fast;
+
+  &:hover {
+    color: v.$text-primary;
+  }
+}
+
+// Select
+.form-select-wrap {
+  position: relative;
+
+  &--error .form-select {
+    border-color: v.$error;
+  }
+}
+
+.form-select {
+  width: 100%;
+  appearance: none;
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 6%);
+  border-radius: v.$r-md;
+  padding: 13px 40px 13px 16px;
+  font-size: 14px;
+  font-family: v.$font-body;
+  color: v.$text-primary;
+  cursor: pointer;
+  transition: v.$t-fast;
+
+  &:focus {
+    outline: none;
+    border-color: v.$yellow;
+    box-shadow: 0 0 0 3px rgba(255, 207, 64, 0.12);
+  }
+
+  option[value=""] {
+    color: v.$text-muted;
+  }
+}
+
+.form-select-arrow {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: v.$text-muted;
+  pointer-events: none;
+}
+
+// Textarea
+.form-textarea {
+  width: 100%;
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 6%);
+  border-radius: v.$r-md;
+  padding: 13px 16px;
+  font-size: 14px;
+  font-family: v.$font-body;
+  color: v.$text-primary;
+  resize: vertical;
+  min-height: 90px;
+  transition: v.$t-fast;
+
+  &::placeholder {
+    color: v.$text-muted;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: v.$yellow;
+    box-shadow: 0 0 0 3px rgba(255, 207, 64, 0.12);
+  }
+
+  &--error {
+    border-color: v.$error;
+  }
+}
+
+.form-error {
+  font-size: 12px;
+  color: v.$error;
+  @include m.flex(row, center, flex-start, 4px);
+
+  &::before {
+    content: "!";
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    background: v.$error;
+    color: #fff;
+    border-radius: v.$r-full;
+    font-size: 9px;
+    font-weight: 800;
+    flex-shrink: 0;
+  }
+}
+
+// ─── PASSWORD STRENGTH ────────────────────────────────────────────────────────
+.pwd-strength {
+  @include m.flex(row, center, flex-start, v.$sp-3);
+  margin-top: 2px;
+
+  &__bars {
+    @include m.flex(row, center, flex-start, v.$sp-1);
+    flex: 1;
+  }
+
+  &__bar {
+    flex: 1;
+    height: 3px;
+    border-radius: v.$r-full;
+    background: darken(v.$bg-alt, 8%);
+    transition: background 0.3s ease;
+  }
+
+  &__label {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: v.$font-mono;
+    flex-shrink: 0;
+    transition: color 0.3s ease;
+  }
+}
+
+// ─── IMAGE UPLOAD ─────────────────────────────────────────────────────────────
+.img-upload {
+  @include m.flex(column, flex-start, flex-start, v.$sp-2);
+
+  &__zone {
+    width: 100%;
+    border: 2px dashed darken(v.$bg-alt, 10%);
+    border-radius: v.$r-lg;
+    padding: v.$sp-6;
+    @include m.flex-center;
+    flex-direction: column;
+    gap: v.$sp-2;
+    cursor: pointer;
+    transition: v.$t-base;
+    background: v.$bg-alt;
+    position: relative;
+    overflow: hidden;
+    min-height: 120px;
+
+    &:hover {
+      border-color: v.$yellow;
+      background: v.$yellow-soft;
+    }
+
+    &--round {
+      width: 100px;
+      height: 100px;
+      border-radius: v.$r-full;
+      min-height: unset;
+      padding: 0;
+    }
+
+    &--has-img {
+      border-style: solid;
+      border-color: v.$yellow;
+      padding: 0;
+    }
+  }
+
+  &__placeholder {
+    @include m.flex(column, center, center, v.$sp-2);
+    color: v.$text-muted;
+    text-align: center;
+  }
+
+  &__text {
+    font-size: 13px;
+    font-weight: 600;
+    color: v.$text-secondary;
+  }
+
+  &__hint {
+    font-size: 11px;
+    color: v.$text-muted;
+  }
+
+  &__preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+
+    &--round {
+      border-radius: v.$r-full;
+    }
+  }
+
+  &__change {
+    position: absolute;
+    inset: 0;
+    background: rgba(v.$black, 0.5);
+    @include m.flex-center;
+    opacity: 0;
+    transition: v.$t-fast;
+    border-radius: inherit;
+
+    span {
+      font-size: 12px;
+      font-weight: 700;
+      color: v.$white;
+      background: rgba(v.$black, 0.7);
+      padding: 4px 10px;
+      border-radius: v.$r-full;
+    }
+  }
+
+  &__zone:hover &__change {
+    opacity: 1;
+  }
+}
+
+// ─── BUTTONS ─────────────────────────────────────────────────────────────────
+.register-btn-row {
+  @include m.flex(row, center, flex-start, v.$sp-3);
+
+  @include m.below-sm {
+    flex-direction: column;
+    .register-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}
+
+.register-btn {
+  @include m.flex(row, center, center, v.$sp-2);
+  background: v.$yellow;
+  color: v.$black;
+  border: none;
+  border-radius: v.$r-md;
+  padding: 14px 28px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: v.$font-body;
+  cursor: pointer;
+  transition: v.$t-spring;
+  flex: 1;
+
+  &:hover {
+    background: v.$yellow-hover;
+    transform: translateY(-2px);
+    box-shadow: v.$shadow-yellow;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &--outline {
+    background: v.$bg-card;
+    color: v.$text-secondary;
+    border: 1.5px solid darken(v.$bg-alt, 8%);
+    flex: 0 0 auto;
+
+    &:hover {
+      background: v.$bg-alt;
+      color: v.$text-primary;
+      transform: translateY(-2px);
+      box-shadow: v.$shadow-sm;
+    }
+  }
+
+  &--loading {
+    opacity: 0.75;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+}
+
+.register-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(v.$black, 0.2);
+  border-top-color: v.$black;
+  border-radius: v.$r-full;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+// ─── API ERROR ────────────────────────────────────────────────────────────────
+.register-api-error {
+  @include m.flex(row, center, flex-start, v.$sp-2);
+  background: rgba(220, 38, 38, 0.07);
+  border: 1px solid rgba(220, 38, 38, 0.25);
+  border-radius: v.$r-md;
+  padding: v.$sp-3 v.$sp-4;
+  font-size: 13px;
+  color: v.$error;
+  font-weight: 500;
+}
+
+// ─── SUCCESS SCREEN ───────────────────────────────────────────────────────────
+.register-success {
+  @include m.flex(column, center, center, v.$sp-5);
+  padding-block: v.$sp-12;
+  text-align: center;
+  animation: scaleIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+
+  &__icon {
+    font-size: 64px;
+  }
+
+  &__title {
+    @include m.heading(28px);
+    color: v.$text-primary;
+  }
+
+  &__sub {
+    font-size: 15px;
+    color: v.$text-muted;
+    max-width: 340px;
+    line-height: 1.6;
+  }
+}
+
+// ─── TERMS ────────────────────────────────────────────────────────────────────
+.register-terms {
+  font-size: 12px;
+  color: v.$text-muted;
+  text-align: center;
+  line-height: 1.6;
+
+  a {
+    color: v.$text-secondary;
+    font-weight: 600;
+    text-decoration: underline;
+    transition: v.$t-fast;
+
+    &:hover {
+      color: v.$text-primary;
+    }
+  }
+}
