@@ -27,7 +27,7 @@ const ProdCard = ({ product }) => {
       : 0;
 
   return (
-    <article className="prod-card">
+    <Link to={`/products/${product.slug || product._id}`} className="prod-card">
       <div className="prod-card__img-wrap">
         {product.images?.[0] ? (
           <img src={product.images[0]} alt={product.name} loading="lazy" />
@@ -43,6 +43,7 @@ const ProdCard = ({ product }) => {
           className={`prod-card__wish ${wished ? "prod-card__wish--active" : ""}`}
           onClick={(e) => {
             e.preventDefault();
+            e.stopPropagation();
             setWished((w) => !w);
           }}
           aria-label="Add to wishlist"
@@ -51,11 +52,16 @@ const ProdCard = ({ product }) => {
         </button>
 
         <div className="prod-card__quick">
-          <button className="prod-card__quick-btn">Add to Cart</button>
+          <button
+            className="prod-card__quick-btn"
+            onClick={(e) => e.preventDefault()}
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
 
-      <Link to={`/product/${product._id}`} className="prod-card__body">
+      <div className="prod-card__body">
         <p className="prod-card__store">{product.store?.name || "ClothMart"}</p>
         <h3 className="prod-card__name">{product.name}</h3>
         <div className="prod-card__foot">
@@ -74,8 +80,8 @@ const ProdCard = ({ product }) => {
             </div>
           )}
         </div>
-      </Link>
-    </article>
+      </div>
+    </Link>
   );
 };
 

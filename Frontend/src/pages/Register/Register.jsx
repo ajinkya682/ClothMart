@@ -1,20 +1,21 @@
 import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../utils/api";
 import "./Register.scss";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const STORE_CATEGORIES = [
-  "Saree & Silk",
-  "Men's Fashion",
-  "Women's Western",
-  "Kids' Wear",
-  "Ethnic & Traditional",
-  "Activewear",
-  "Winterwear",
-  "Streetwear",
-  "Bridal & Occasion",
-  "Accessories",
+  { label: "Saree & Silk", value: "saree" },
+  { label: "Men's Fashion", value: "mens" },
+  { label: "Women's Western", value: "western" },
+  { label: "Kids' Wear", value: "kids" },
+  { label: "Ethnic & Traditional", value: "ethnic" },
+  { label: "Activewear", value: "other" },
+  { label: "Winterwear", value: "other" },
+  { label: "Streetwear", value: "other" },
+  { label: "Bridal & Occasion", value: "other" },
+  { label: "Accessories", value: "other" },
 ];
 
 const STEPS_CUSTOMER = ["Account", "Profile", "Done"];
@@ -112,6 +113,8 @@ function validate(fields, data) {
     else if (f.name === "confirmPassword" && v !== data.password)
       errs[f.name] = "Passwords do not match";
     else if (f.name === "phone" && v && !/^[6-9]\d{9}$/.test(v))
+      errs[f.name] = "Enter a valid 10-digit Indian mobile number";
+    else if (f.name === "storePhone" && v && !/^[6-9]\d{9}$/.test(v))
       errs[f.name] = "Enter a valid 10-digit Indian mobile number";
     else if (f.name === "pincode" && v && !/^\d{6}$/.test(v))
       errs[f.name] = "Enter a valid 6-digit pincode";
@@ -224,8 +227,9 @@ function FormField({ field, value, onChange, error, showPwd, togglePwd }) {
           >
             <option value="">{field.placeholder}</option>
             {field.options.map((opt) => (
-              <option key={opt} value={opt}>
-                {opt}
+              // opt is { label, value } for store categories
+              <option key={opt.label ?? opt} value={opt.label ?? opt}>
+                {opt.label ?? opt}
               </option>
             ))}
           </select>
@@ -305,7 +309,7 @@ function FormField({ field, value, onChange, error, showPwd, togglePwd }) {
   );
 }
 
-// ─── Step definitions ─────────────────────────────────────────────────────────
+// ─── Step field definitions ───────────────────────────────────────────────────
 const STEP1_FIELDS = [
   {
     name: "fullName",
@@ -418,6 +422,7 @@ const STEP2_STORE_FIELDS = [
     type: "select",
     placeholder: "Choose a category",
     required: true,
+    // options are { label, value } objects — FormField reads .label for display
     options: STORE_CATEGORIES,
   },
   {
@@ -523,6 +528,10 @@ export default function Register() {
   const totalSteps = isStoreOwner ? 3 : 2;
   const steps = isStoreOwner ? STEPS_STORE_OWNER : STEPS_CUSTOMER;
 
+  // ── Success step index (1-based, after last real step) ──
+  const successStep = totalSteps + 1;
+  const isSuccess = step === successStep;
+
   const set = (name, value) => {
     setData((d) => ({ ...d, [name]: value }));
     setErrors((e) => ({ ...e, [name]: "" }));
@@ -553,21 +562,73 @@ export default function Register() {
 
   const back = () => {
     setErrors({});
+    setApiError("");
     setStep((s) => s - 1);
   };
 
+  // ── Resolve category label → backend slug ──────────────────────────────────
+  const resolveCategoryValue = (label) => {
+    const match = STORE_CATEGORIES.find((c) => c.label === label);
+    return match?.value ?? "other";
+  };
+
+  // ── SUBMIT ─────────────────────────────────────────────────────────────────
+  //
+  // Customer flow:
+  //   POST /auth/register  (name, email, password, role, phone, profileImage)
+  //   → success step
+  //
+  // Store Owner flow:
+  //   1. POST /auth/register  (same fields above — token saved by AuthContext)
+  //   2. POST /stores         (name, description, category, phone, gst,
+  //                            street, city, state, pincode, logo, banner)
+  //      → token auto-attached by api.js interceptor
+  //   → success step
+  //
   const handleSubmit = async () => {
     setLoading(true);
     setApiError("");
+
     try {
-      const fd = new FormData();
-      Object.entries(data).forEach(([k, v]) => fd.append(k, v));
-      fd.append("role", role);
-      if (profileImg) fd.append("profileImage", profileImg);
-      if (storeLogo) fd.append("storeLogo", storeLogo);
-      if (storeBanner) fd.append("storeBanner", storeBanner);
-      await register(fd);
-      navigate("/");
+      // ── 1. Register the user ─────────────────────────────────────────────
+      const userFd = new FormData();
+      userFd.append("name", data.fullName.trim());
+      userFd.append("email", data.email.trim());
+      userFd.append("password", data.password);
+      userFd.append("role", role);
+      // For customers use `phone`; store owners provide `storePhone`
+      userFd.append(
+        "phone",
+        (isStoreOwner ? data.storePhone : data.phone) || "",
+      );
+      if (profileImg) userFd.append("profileImage", profileImg);
+
+      await register(userFd);
+      // AuthContext.register() stores cm_token + cm_user in localStorage
+      // api.js interceptor will now attach Bearer token to all subsequent calls
+
+      // ── 2. Create the store (store_owner only) ───────────────────────────
+      if (isStoreOwner) {
+        const storeFd = new FormData();
+        storeFd.append("name", data.storeName.trim());
+        storeFd.append("description", (data.storeDesc || "").trim());
+        storeFd.append("category", resolveCategoryValue(data.storeCategory));
+        storeFd.append("phone", (data.storePhone || "").trim());
+        storeFd.append("gst", (data.gst || "").trim());
+        // Address
+        storeFd.append("street", data.street.trim());
+        storeFd.append("city", data.city.trim());
+        storeFd.append("state", data.state.trim());
+        storeFd.append("pincode", data.pincode.trim());
+        // Images — backend expects field name `logo` (not `storeLogo`)
+        if (storeLogo) storeFd.append("logo", storeLogo);
+        if (storeBanner) storeFd.append("banner", storeBanner);
+
+        await api.post("/stores", storeFd);
+      }
+
+      // ── 3. Advance to success screen ─────────────────────────────────────
+      setStep(successStep);
     } catch (err) {
       setApiError(
         err?.response?.data?.message ||
@@ -582,7 +643,7 @@ export default function Register() {
 
   return (
     <div className="register-page">
-      {/* Left panel — branding */}
+      {/* ── Left panel — branding ───────────────────────────────────────────── */}
       <div className="register-panel register-panel--left">
         <div className="register-panel__inner">
           <Link to="/" className="register-logo">
@@ -631,13 +692,12 @@ export default function Register() {
             ))}
           </ul>
 
-          {/* Decorative shapes */}
           <div className="register-panel__deco1" aria-hidden />
           <div className="register-panel__deco2" aria-hidden />
         </div>
       </div>
 
-      {/* Right panel — form */}
+      {/* ── Right panel — form ──────────────────────────────────────────────── */}
       <div className="register-panel register-panel--right">
         <div className="register-form-wrap">
           {/* Top: logo mobile + sign in link */}
@@ -654,35 +714,37 @@ export default function Register() {
             </p>
           </div>
 
-          {/* Progress */}
-          <div className="register-progress">
-            <div className="register-progress__bar">
-              <div
-                className="register-progress__fill"
-                style={{ width: `${progressPct}%` }}
-              />
-            </div>
-            <div className="register-progress__steps">
-              {steps.slice(0, -1).map((label, i) => {
-                const idx = i + 1;
-                const done = step > idx;
-                const curr = step === idx;
-                return (
-                  <div
-                    key={label}
-                    className={`register-step${done ? " register-step--done" : ""}${curr ? " register-step--active" : ""}`}
-                  >
-                    <div className="register-step__circle">
-                      {done ? <CheckIcon /> : <span>{idx}</span>}
+          {/* Progress bar — hide on success */}
+          {!isSuccess && (
+            <div className="register-progress">
+              <div className="register-progress__bar">
+                <div
+                  className="register-progress__fill"
+                  style={{ width: `${progressPct}%` }}
+                />
+              </div>
+              <div className="register-progress__steps">
+                {steps.slice(0, -1).map((label, i) => {
+                  const idx = i + 1;
+                  const done = step > idx;
+                  const curr = step === idx;
+                  return (
+                    <div
+                      key={label}
+                      className={`register-step${done ? " register-step--done" : ""}${curr ? " register-step--active" : ""}`}
+                    >
+                      <div className="register-step__circle">
+                        {done ? <CheckIcon /> : <span>{idx}</span>}
+                      </div>
+                      <span className="register-step__label">{label}</span>
                     </div>
-                    <span className="register-step__label">{label}</span>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* ── STEP 1: Account ── */}
+          {/* ── STEP 1: Account ─────────────────────────────────────────────── */}
           {step === 1 && (
             <div className="register-form-step" key="step1">
               <div className="register-form-hd">
@@ -786,7 +848,7 @@ export default function Register() {
             </div>
           )}
 
-          {/* ── STEP 2 (Customer): Profile ── */}
+          {/* ── STEP 2 (Customer): Profile ──────────────────────────────────── */}
           {step === 2 && !isStoreOwner && (
             <div className="register-form-step" key="step2-customer">
               <div className="register-form-hd">
@@ -817,38 +879,7 @@ export default function Register() {
                 ))}
               </div>
 
-              {apiError && (
-                <div className="register-api-error">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <line
-                      x1="12"
-                      y1="8"
-                      x2="12"
-                      y2="12"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="12"
-                      y1="16"
-                      x2="12.01"
-                      y2="16"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  {apiError}
-                </div>
-              )}
+              {apiError && <ApiError message={apiError} />}
 
               <div className="register-btn-row">
                 <button
@@ -875,11 +906,12 @@ export default function Register() {
                 >
                   {loading ? (
                     <>
-                      <span className="register-spinner" /> Creating account…
+                      <span className="register-spinner" />
+                      Creating account…
                     </>
                   ) : (
                     <>
-                      Create Account{" "}
+                      Create Account
                       <svg
                         width="16"
                         height="16"
@@ -901,7 +933,7 @@ export default function Register() {
             </div>
           )}
 
-          {/* ── STEP 2 (Store Owner): Store Info ── */}
+          {/* ── STEP 2 (Store Owner): Store Info ────────────────────────────── */}
           {step === 2 && isStoreOwner && (
             <div className="register-form-step" key="step2-store">
               <div className="register-form-hd">
@@ -958,7 +990,7 @@ export default function Register() {
             </div>
           )}
 
-          {/* ── STEP 3 (Store Owner): Media & Address ── */}
+          {/* ── STEP 3 (Store Owner): Media & Address ───────────────────────── */}
           {step === 3 && isStoreOwner && (
             <div className="register-form-step" key="step3-store">
               <div className="register-form-hd">
@@ -1001,38 +1033,7 @@ export default function Register() {
                 ))}
               </div>
 
-              {apiError && (
-                <div className="register-api-error">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <line
-                      x1="12"
-                      y1="8"
-                      x2="12"
-                      y2="12"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="12"
-                      y1="16"
-                      x2="12.01"
-                      y2="16"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  {apiError}
-                </div>
-              )}
+              {apiError && <ApiError message={apiError} />}
 
               <div className="register-btn-row">
                 <button
@@ -1086,8 +1087,8 @@ export default function Register() {
             </div>
           )}
 
-          {/* ── SUCCESS ── */}
-          {((isStoreOwner && step === 4) || (!isStoreOwner && step === 3)) && (
+          {/* ── SUCCESS ─────────────────────────────────────────────────────── */}
+          {isSuccess && (
             <div className="register-success">
               <div className="register-success__icon">🎉</div>
               <h2 className="register-success__title">You're all set!</h2>
@@ -1095,15 +1096,15 @@ export default function Register() {
                 Welcome to ClothMart
                 {data.fullName ? `, ${data.fullName.split(" ")[0]}` : ""}!
                 {isStoreOwner
-                  ? " Your store is under review."
+                  ? " Your store has been created and is under review."
                   : " Start shopping now."}
               </p>
               <Link
-                to="/"
+                to={isStoreOwner ? "/dashboard" : "/"}
                 className="register-btn"
                 style={{ textDecoration: "none", display: "inline-flex" }}
               >
-                Go to Homepage
+                {isStoreOwner ? "Go to Dashboard" : "Start Shopping"}
               </Link>
             </div>
           )}
@@ -1115,6 +1116,36 @@ export default function Register() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── Inline API error banner ──────────────────────────────────────────────────
+function ApiError({ message }) {
+  return (
+    <div className="register-api-error">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
+        <line
+          x1="12"
+          y1="8"
+          x2="12"
+          y2="12"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+        <line
+          x1="12"
+          y1="16"
+          x2="12.01"
+          y2="16"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+        />
+      </svg>
+      {message}
     </div>
   );
 }

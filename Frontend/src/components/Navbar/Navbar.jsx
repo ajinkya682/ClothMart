@@ -91,23 +91,25 @@ const Navbar = () => {
 
           {/* Actions */}
           <div className="navbar__actions">
-            {/* Cart */}
-            <Link to="/cart" className="navbar__cart" aria-label="Cart">
-              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                <path
-                  d="M1 1h3l1.6 8h9.8l1.6-5.5H5"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <circle cx="8" cy="17" r="1.2" fill="currentColor" />
-                <circle cx="15" cy="17" r="1.2" fill="currentColor" />
-              </svg>
-              {cartCount > 0 && (
-                <span className="navbar__cart-badge">{cartCount}</span>
-              )}
-            </Link>
+            {/* ── Cart icon — only shown when logged in ── */}
+            {user && (
+              <Link to="/cart" className="navbar__cart" aria-label="Cart">
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                  <path
+                    d="M1 1h3l1.6 8h9.8l1.6-5.5H5"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <circle cx="8" cy="17" r="1.2" fill="currentColor" />
+                  <circle cx="15" cy="17" r="1.2" fill="currentColor" />
+                </svg>
+                {cartCount > 0 && (
+                  <span className="navbar__cart-badge">{cartCount}</span>
+                )}
+              </Link>
+            )}
 
             {/* User or Auth */}
             {user ? (
@@ -146,13 +148,16 @@ const Navbar = () => {
                       <Link to="/orders" className="navbar__dropdown-item">
                         📦 My Orders
                       </Link>
-                      <Link to="/wishlist" className="navbar__dropdown-item">
-                        ❤️ Wishlist
+                      <Link to="/track-order" className="navbar__dropdown-item">
+                        🔍 Track Order
                       </Link>
                       {user.role === "store_owner" && (
                         <>
                           <div className="navbar__dropdown-divider" />
-                          <Link to="/admin" className="navbar__dropdown-item">
+                          <Link
+                            to="/dashboard"
+                            className="navbar__dropdown-item"
+                          >
                             🏪 My Store
                           </Link>
                         </>
@@ -213,6 +218,10 @@ const Navbar = () => {
           <div className="mobile-menu__footer">
             {user ? (
               <>
+                {/* Cart link in mobile menu when logged in */}
+                <Link to="/cart" className="mobile-menu__link">
+                  🛒 My Cart {cartCount > 0 && `(${cartCount})`}
+                </Link>
                 <Link to="/profile" className="mobile-menu__link">
                   👤 My Profile
                 </Link>

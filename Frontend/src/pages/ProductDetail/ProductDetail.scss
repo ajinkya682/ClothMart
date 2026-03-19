@@ -1,0 +1,604 @@
+@use "../../styles/base/variables" as v;
+@use "../../styles/base/mixins" as m;
+
+.pd-page {
+  background: v.$bg-main;
+  min-height: 100vh;
+  padding: calc(68px + v.$sp-8) 0 v.$sp-20;
+}
+.pd-container {
+  @include m.container;
+  @include m.flex(column, stretch, flex-start, v.$sp-8);
+}
+
+// ─── BREADCRUMB ───────────────────────────────────────────────────────────────
+.pd-breadcrumb {
+  font-size: 13px;
+  color: v.$text-muted;
+  @include m.flex(row, center, flex-start, v.$sp-2);
+  flex-wrap: wrap;
+  a {
+    color: v.$text-muted;
+    text-decoration: none;
+    transition: v.$t-fast;
+    &:hover {
+      color: v.$yellow-hover;
+    }
+  }
+  span {
+    color: v.$text-primary;
+    font-weight: 600;
+  }
+}
+
+// ─── LAYOUT ──────────────────────────────────────────────────────────────────
+.pd-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$sp-12;
+  @include m.below-lg {
+    grid-template-columns: 1fr;
+    gap: v.$sp-8;
+  }
+}
+
+// ─── GALLERY ─────────────────────────────────────────────────────────────────
+.pd-gallery {
+  @include m.flex(column, stretch, flex-start, v.$sp-3);
+
+  &__main {
+    position: relative;
+    border-radius: v.$r-xl;
+    overflow: hidden;
+    background: v.$bg-alt;
+    aspect-ratio: 1;
+  }
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+    &:hover {
+      transform: scale(1.03);
+    }
+  }
+
+  &__badge {
+    position: absolute;
+    top: v.$sp-4;
+    left: v.$sp-4;
+    background: v.$error;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+    border-radius: v.$r-full;
+    padding: 4px 12px;
+    font-family: v.$font-mono;
+  }
+
+  &__thumbs {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+    flex-wrap: wrap;
+  }
+
+  &__thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: v.$r-md;
+    overflow: hidden;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: v.$t-fast;
+    background: none;
+    padding: 0;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    &--active {
+      border-color: v.$yellow;
+    }
+    &:hover:not(&--active) {
+      border-color: darken(v.$bg-alt, 15%);
+    }
+  }
+}
+
+// ─── INFO PANEL ───────────────────────────────────────────────────────────────
+.pd-info {
+  @include m.flex(column, stretch, flex-start, v.$sp-5);
+  animation: fadeUp 0.4s ease both;
+
+  &__store {
+    font-size: 12px;
+    font-weight: 700;
+    color: v.$yellow-hover;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-family: v.$font-mono;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__name {
+    @include m.display(30px);
+    color: v.$text-primary;
+    line-height: 1.2;
+  }
+
+  &__rating {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+  }
+
+  &__stars {
+    @include m.flex(row, center, flex-start, 2px);
+  }
+
+  &__rating-val {
+    font-size: 15px;
+    font-weight: 800;
+    color: v.$text-primary;
+    font-family: v.$font-mono;
+  }
+
+  &__review-count {
+    font-size: 13px;
+    color: v.$text-muted;
+  }
+
+  &__price-block {
+    @include m.flex(row, center, flex-start, v.$sp-3);
+  }
+
+  &__price {
+    font-size: 32px;
+    font-weight: 900;
+    color: v.$text-primary;
+    font-family: v.$font-mono;
+  }
+
+  &__original {
+    font-size: 18px;
+    color: v.$text-muted;
+    text-decoration: line-through;
+    font-family: v.$font-mono;
+  }
+
+  &__discount-tag {
+    background: rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+    color: v.$success;
+    border-radius: v.$r-full;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 3px 10px;
+    font-family: v.$font-mono;
+  }
+
+  &__stock {
+    font-size: 13px;
+    font-weight: 700;
+    color: v.$success;
+    &--low {
+      color: v.$warning;
+    }
+  }
+
+  &__desc {
+    font-size: 14px;
+    color: v.$text-secondary;
+    line-height: 1.8;
+    padding: v.$sp-4;
+    background: v.$bg-alt;
+    border-radius: v.$r-md;
+    border-left: 3px solid v.$yellow;
+  }
+}
+
+.pd-star--on {
+  color: v.$yellow;
+}
+.pd-star--off {
+  color: darken(v.$bg-alt, 20%);
+}
+
+// ─── SELECTORS ────────────────────────────────────────────────────────────────
+.pd-selector {
+  @include m.flex(column, flex-start, flex-start, v.$sp-3);
+
+  &__label {
+    font-size: 13px;
+    font-weight: 700;
+    color: v.$text-secondary;
+    &--error {
+      color: v.$error;
+    }
+  }
+
+  &__error {
+    font-weight: 400;
+    color: v.$error;
+    margin-left: v.$sp-1;
+  }
+
+  &__options {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+    flex-wrap: wrap;
+  }
+
+  &__chip {
+    padding: 8px 16px;
+    border-radius: v.$r-sm;
+    border: 1.5px solid darken(v.$bg-alt, 8%);
+    background: v.$bg-card;
+    font-size: 13px;
+    font-weight: 700;
+    color: v.$text-secondary;
+    cursor: pointer;
+    transition: v.$t-fast;
+    font-family: v.$font-body;
+
+    &:hover {
+      border-color: v.$yellow;
+      color: v.$text-primary;
+    }
+
+    &--active {
+      border-color: v.$yellow;
+      background: v.$yellow-soft;
+      color: v.$text-primary;
+    }
+  }
+}
+
+// ─── QTY ─────────────────────────────────────────────────────────────────────
+.pd-qty {
+  @include m.flex(column, flex-start, flex-start, v.$sp-3);
+
+  &__control {
+    @include m.flex(row, center, flex-start, 0);
+    border: 1.5px solid darken(v.$bg-alt, 8%);
+    border-radius: v.$r-md;
+    overflow: hidden;
+    background: v.$bg-card;
+  }
+
+  &__btn {
+    width: 40px;
+    height: 40px;
+    background: none;
+    border: none;
+    font-size: 18px;
+    font-weight: 700;
+    color: v.$text-secondary;
+    cursor: pointer;
+    transition: v.$t-fast;
+    &:hover {
+      background: v.$bg-alt;
+      color: v.$text-primary;
+    }
+  }
+
+  &__val {
+    min-width: 48px;
+    text-align: center;
+    font-size: 15px;
+    font-weight: 800;
+    color: v.$text-primary;
+    font-family: v.$font-mono;
+    border-left: 1.5px solid darken(v.$bg-alt, 8%);
+    border-right: 1.5px solid darken(v.$bg-alt, 8%);
+    line-height: 40px;
+  }
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+.pd-actions {
+  @include m.flex(column, stretch, flex-start, v.$sp-3);
+
+  &__cart {
+    @include m.flex-center;
+    padding: 16px;
+    border-radius: v.$r-md;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: v.$font-body;
+    cursor: pointer;
+    transition: v.$t-spring;
+    border: 2px solid v.$yellow;
+    background: transparent;
+    color: v.$text-primary;
+
+    &:hover:not(:disabled) {
+      background: v.$yellow-soft;
+      transform: translateY(-2px);
+    }
+
+    &--added {
+      background: v.$success;
+      border-color: v.$success;
+      color: #fff;
+    }
+    &--disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+      border-color: darken(v.$bg-alt, 15%);
+    }
+  }
+
+  &__buy {
+    @include m.flex-center;
+    padding: 16px;
+    border-radius: v.$r-md;
+    font-size: 15px;
+    font-weight: 800;
+    font-family: v.$font-body;
+    cursor: pointer;
+    background: v.$yellow;
+    color: v.$black;
+    border: none;
+    transition: v.$t-spring;
+    &:hover:not(:disabled) {
+      background: v.$yellow-hover;
+      transform: translateY(-2px);
+      box-shadow: v.$shadow-yellow;
+    }
+    &:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+  }
+
+  &__login-hint {
+    font-size: 13px;
+    color: v.$text-muted;
+    text-align: center;
+    a {
+      color: v.$yellow-hover;
+      font-weight: 700;
+      text-decoration: none;
+    }
+  }
+}
+
+// ─── REVIEWS SECTION ──────────────────────────────────────────────────────────
+.pd-reviews-section {
+  @include m.flex(column, stretch, flex-start, v.$sp-6);
+  padding-top: v.$sp-8;
+  border-top: 1.5px solid darken(v.$bg-alt, 5%);
+}
+
+.pd-reviews-title {
+  @include m.display(24px);
+  color: v.$text-primary;
+}
+
+.pd-reviews-count {
+  font-size: 16px;
+  font-weight: 400;
+  color: v.$text-muted;
+  margin-left: v.$sp-2;
+}
+
+.pd-reviews-empty {
+  font-size: 14px;
+  color: v.$text-muted;
+  padding: v.$sp-8;
+  text-align: center;
+  background: v.$bg-alt;
+  border-radius: v.$r-lg;
+}
+
+.pd-reviews-list {
+  @include m.flex(column, stretch, flex-start, v.$sp-4);
+}
+
+// ─── REVIEW CARD ─────────────────────────────────────────────────────────────
+.pd-review {
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 5%);
+  border-radius: v.$r-lg;
+  padding: v.$sp-5;
+  @include m.flex(column, flex-start, flex-start, v.$sp-3);
+  animation: fadeUp 0.3s ease both;
+
+  &__head {
+    @include m.flex(row, center, flex-start, v.$sp-3);
+    width: 100%;
+  }
+
+  &__avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: v.$r-full;
+    background: v.$yellow;
+    @include m.flex-center;
+    font-size: 13px;
+    font-weight: 800;
+    color: v.$black;
+    font-family: v.$font-display;
+    flex-shrink: 0;
+  }
+
+  &__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: v.$text-primary;
+  }
+
+  &__stars {
+    @include m.flex(row, center, flex-start, 2px);
+  }
+
+  &__star {
+    &--on {
+      color: v.$yellow;
+    }
+    &--off {
+      color: darken(v.$bg-alt, 20%);
+    }
+  }
+
+  &__date {
+    font-size: 12px;
+    color: v.$text-muted;
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+
+  &__comment {
+    font-size: 14px;
+    color: v.$text-secondary;
+    line-height: 1.7;
+  }
+}
+
+// ─── REVIEW FORM ─────────────────────────────────────────────────────────────
+.pd-review-form {
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 5%);
+  border-radius: v.$r-xl;
+  padding: v.$sp-6;
+  @include m.flex(column, stretch, flex-start, v.$sp-4);
+
+  &__title {
+    font-size: 16px;
+    font-weight: 800;
+    color: v.$text-primary;
+    font-family: v.$font-display;
+  }
+
+  &__success {
+    background: rgba(22, 163, 74, 0.1);
+    border: 1px solid rgba(22, 163, 74, 0.25);
+    color: v.$success;
+    border-radius: v.$r-md;
+    padding: v.$sp-3 v.$sp-4;
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  &__stars {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+  }
+
+  &__star {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: darken(v.$bg-alt, 20%);
+    padding: 2px;
+    transition: v.$t-fast;
+    font-size: 0;
+    &--on {
+      color: v.$yellow;
+    }
+    &:hover {
+      transform: scale(1.2);
+    }
+  }
+
+  &__rating-label {
+    font-size: 13px;
+    font-weight: 700;
+    color: v.$text-secondary;
+    margin-left: v.$sp-2;
+  }
+
+  &__textarea {
+    background: v.$bg-alt;
+    border: 1.5px solid darken(v.$bg-alt, 8%);
+    border-radius: v.$r-md;
+    padding: v.$sp-4;
+    font-size: 14px;
+    font-family: v.$font-body;
+    color: v.$text-primary;
+    resize: vertical;
+    transition: v.$t-fast;
+    &::placeholder {
+      color: v.$text-muted;
+    }
+    &:focus {
+      outline: none;
+      border-color: v.$yellow;
+      box-shadow: 0 0 0 3px rgba(255, 207, 64, 0.1);
+    }
+  }
+
+  &__error {
+    font-size: 13px;
+    color: v.$error;
+    font-weight: 600;
+  }
+
+  &__submit {
+    @include m.btn-primary;
+    align-self: flex-start;
+    padding: 12px v.$sp-8;
+    border-radius: v.$r-md;
+    &--loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// ─── LOADING SKELETON ────────────────────────────────────────────────────────
+.pd-loading {
+  @include m.container;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: v.$sp-12;
+  padding-top: calc(68px + v.$sp-8);
+
+  &__imgs {
+    @include m.flex(column, stretch, flex-start, v.$sp-3);
+  }
+  &__main {
+    aspect-ratio: 1;
+    border-radius: v.$r-xl;
+    @include m.shimmer;
+  }
+  &__thumbs {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+  }
+  &__thumb {
+    width: 72px;
+    height: 72px;
+    border-radius: v.$r-md;
+    @include m.shimmer;
+  }
+  &__info {
+    @include m.flex(column, flex-start, flex-start, v.$sp-4);
+    padding-top: v.$sp-4;
+  }
+  &__line {
+    height: 20px;
+    border-radius: v.$r-sm;
+    @include m.shimmer;
+  }
+}
+
+// ─── ERROR ────────────────────────────────────────────────────────────────────
+.pd-error {
+  @include m.flex-center;
+  flex-direction: column;
+  gap: v.$sp-4;
+  min-height: 60vh;
+  text-align: center;
+  h2 {
+    @include m.display(28px);
+    color: v.$text-primary;
+  }
+  &__back {
+    color: v.$yellow-hover;
+    font-weight: 700;
+    text-decoration: none;
+  }
+}

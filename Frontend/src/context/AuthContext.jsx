@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import api from "../utils/api";
 
 const AuthContext = createContext(null);
@@ -6,6 +6,15 @@ const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // We use a ref to hold the cart sync functions
+  // (avoids circular imports between AuthContext and CartContext)
+  const cartSyncRef = useRef(null);
+
+  // Called by CartProvider to register its sync functions
+  const registerCartSync = (syncAfterLogin, clearCartOnLogout) => {
+    cartSyncRef.current = { syncAfterLogin, clearCartOnLogout };
+  };
 
   useEffect(() => {
     const saved = localStorage.getItem("cm_user");
@@ -24,6 +33,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("cm_token", token);
     localStorage.setItem("cm_user", JSON.stringify(u));
     setUser(u);
+    // Sync cart after register too
+    if (cartSyncRef.current?.syncAfterLogin) {
+      await cartSyncRef.current.syncAfterLogin();
+    }
     return res.data;
   };
 
@@ -33,6 +46,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem("cm_token", token);
     localStorage.setItem("cm_user", JSON.stringify(u));
     setUser(u);
+    // Merge localStorage cart into DB after login
+    if (cartSyncRef.current?.syncAfterLogin) {
+      await cartSyncRef.current.syncAfterLogin();
+    }
     return res.data;
   };
 
@@ -43,6 +60,10 @@ export const AuthProvider = ({ children }) => {
     localStorage.removeItem("cm_token");
     localStorage.removeItem("cm_user");
     setUser(null);
+    // Wipe cart state on logout
+    if (cartSyncRef.current?.clearCartOnLogout) {
+      cartSyncRef.current.clearCartOnLogout();
+    }
   };
 
   const updateUser = (updated) => {
@@ -59,6 +80,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         updateUser,
+        registerCartSync,
         isAuthenticated: !!user,
         isStoreOwner: user?.role === "store_owner",
         isCustomer: user?.role === "customer",
@@ -69,7 +91,6 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// ✅ THIS IS THE MISSING EXPORT
 export const useAuth = () => {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used inside AuthProvider");

@@ -46,7 +46,10 @@ export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+
+  // If user was redirected here from a protected route, send them back there
+  // after login — but only if their role matches. Otherwise use role default.
+  const from = location.state?.from?.pathname;
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -68,6 +71,13 @@ export default function Login() {
     return errs;
   };
 
+  // ── Role-based redirect ─────────────────────────────────────────────────────
+  // Priority: previous protected page (from) → role default
+  const getRedirectPath = (role) => {
+    if (from && from !== "/login" && from !== "/register") return from;
+    return role === "store_owner" ? "/dashboard" : "/";
+  };
+
   // ── Submit ──────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -80,9 +90,13 @@ export default function Login() {
     setErrors({});
     setLoading(true);
     try {
-      await login({ email: email.trim(), password });
+      // login() returns res.data which includes the user object with role
+      const data = await login({ email: email.trim(), password });
       setSuccess(true);
-      setTimeout(() => navigate(from, { replace: true }), 900);
+      setTimeout(
+        () => navigate(getRedirectPath(data.user.role), { replace: true }),
+        900,
+      );
     } catch (err) {
       setApiError(
         err?.response?.data?.message ||

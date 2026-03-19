@@ -44,17 +44,13 @@ const getDashboardSummary = async (req, res) => {
       {
         $match: {
           store: store._id,
-          paymentStatus: "paid",
+          status: { $ne: "cancelled" }, // ← include COD too
           createdAt: { $gte: todayStart, $lte: todayEnd },
         },
       },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$totalAmount" },
-        },
-      },
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
     ]);
+
     const todayRevenue = todayRevenueResult[0]?.total || 0;
 
     // 5. Total orders all time
@@ -67,16 +63,12 @@ const getDashboardSummary = async (req, res) => {
       {
         $match: {
           store: store._id,
-          paymentStatus: "paid",
+          status: { $ne: "cancelled" }, // ← include COD
         },
       },
-      {
-        $group: {
-          _id: null,
-          total: { $sum: "$totalAmount" },
-        },
-      },
+      { $group: { _id: null, total: { $sum: "$totalAmount" } } },
     ]);
+
     const totalRevenue = totalRevenueResult[0]?.total || 0;
 
     // 7. Pending orders count

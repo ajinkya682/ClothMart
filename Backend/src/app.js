@@ -48,6 +48,8 @@ app.use("/api/reviews", reviewRoutes);
 app.use("/api/coupons", couponRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use("/api/cart", require("./routes/cart.routes"));
+app.use("/api/coupons", require("./routes/coupon.route"));
 
 // ─── TEST ROUTE ───────────────────────────────
 app.get("/", (req, res) => {

@@ -7,14 +7,33 @@ const imageKit = new ImageKit({
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
 });
 
+// ─── Upload helper ────────────────────────────
+const uploadToImageKit = async (fileBuffer, fileName) => {
+  const file = await imageKit.files.upload({
+    file: await toFile(Buffer.from(fileBuffer), "file"),
+    fileName,
+    folder: "ClothMart_stores",
+  });
+  return file.url;
+};
+
 // ─────────────────────────────────────────────
 // CREATE STORE
 // POST /api/stores
 // ─────────────────────────────────────────────
 const createStore = async (req, res) => {
   try {
-    const { name, description, category, street, city, state, pincode } =
-      req.body;
+    const {
+      name,
+      description,
+      category,
+      street,
+      city,
+      state,
+      pincode,
+      phone,
+      gst,
+    } = req.body;
 
     // 1. Only store_owner can create
     if (req.user.role !== "store_owner") {
@@ -41,15 +60,23 @@ const createStore = async (req, res) => {
       });
     }
 
-    // 4. Upload logo if file sent
+    // 4. Upload logo + banner (using upload.fields)
+    // req.files = { logo: [file], banner: [file] }
     let logoUrl = "";
-    if (req.file) {
-      const file = await imageKit.files.upload({
-        file: await toFile(Buffer.from(req.file.buffer), "file"),
-        fileName: `store_logo_${Date.now()}`,
-        folder: "ClothMart_stores",
-      });
-      logoUrl = file.url;
+    let bannerUrl = "";
+
+    if (req.files?.logo?.[0]) {
+      logoUrl = await uploadToImageKit(
+        req.files.logo[0].buffer,
+        `store_logo_${Date.now()}`,
+      );
+    }
+
+    if (req.files?.banner?.[0]) {
+      bannerUrl = await uploadToImageKit(
+        req.files.banner[0].buffer,
+        `store_banner_${Date.now()}`,
+      );
     }
 
     // 5. Create store
@@ -58,7 +85,10 @@ const createStore = async (req, res) => {
       name,
       description: description || "",
       logo: logoUrl,
+      banner: bannerUrl,
       category: category || "other",
+      phone: phone || "",
+      gst: gst || "",
       address: {
         street: street || "",
         city: city || "",
@@ -90,14 +120,8 @@ const getAllStores = async (req, res) => {
     const { search, category } = req.query;
 
     const filter = { isActive: true };
-
-    if (search) {
-      filter.name = { $regex: search, $options: "i" };
-    }
-
-    if (category) {
-      filter.category = category;
-    }
+    if (search) filter.name = { $regex: search, $options: "i" };
+    if (category) filter.category = category;
 
     const stores = await storeModel
       .find(filter)
@@ -111,10 +135,7 @@ const getAllStores = async (req, res) => {
     });
   } catch (error) {
     console.error("Get stores error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -124,27 +145,26 @@ const getAllStores = async (req, res) => {
 // ─────────────────────────────────────────────
 const getStoreById = async (req, res) => {
   try {
+    // Support both _id and slug
     const store = await storeModel
-      .findById(req.params.id)
+      .findOne({
+        $or: [
+          { _id: req.params.id.match(/^[a-f\d]{24}$/i) ? req.params.id : null },
+          { slug: req.params.id },
+        ],
+      })
       .populate("owner", "name email phone");
 
     if (!store) {
-      return res.status(404).json({
-        success: false,
-        message: "Store not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Store not found" });
     }
 
-    res.status(200).json({
-      success: true,
-      store,
-    });
+    res.status(200).json({ success: true, store });
   } catch (error) {
     console.error("Get store error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -165,16 +185,10 @@ const getMyStore = async (req, res) => {
       });
     }
 
-    res.status(200).json({
-      success: true,
-      store,
-    });
+    res.status(200).json({ success: true, store });
   } catch (error) {
     console.error("Get my store error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -184,19 +198,25 @@ const getMyStore = async (req, res) => {
 // ─────────────────────────────────────────────
 const updateStore = async (req, res) => {
   try {
-    const { name, description, category, street, city, state, pincode } =
-      req.body;
+    const {
+      name,
+      description,
+      category,
+      street,
+      city,
+      state,
+      pincode,
+      phone,
+      gst,
+    } = req.body;
 
-    // 1. Find store
     const store = await storeModel.findById(req.params.id);
     if (!store) {
-      return res.status(404).json({
-        success: false,
-        message: "Store not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Store not found" });
     }
 
-    // 2. Only owner can update
     if (store.owner.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
@@ -204,23 +224,33 @@ const updateStore = async (req, res) => {
       });
     }
 
-    // 3. Upload new logo if file sent
+    // Upload new logo/banner if sent
     let logoUrl;
-    if (req.file) {
-      const file = await imageKit.files.upload({
-        file: await toFile(Buffer.from(req.file.buffer), "file"),
-        fileName: `store_logo_${Date.now()}`,
-        folder: "ClothMart_stores",
-      });
-      logoUrl = file.url;
+    let bannerUrl;
+
+    if (req.files?.logo?.[0]) {
+      logoUrl = await uploadToImageKit(
+        req.files.logo[0].buffer,
+        `store_logo_${Date.now()}`,
+      );
     }
 
-    // 4. Build update — only sent fields
+    if (req.files?.banner?.[0]) {
+      bannerUrl = await uploadToImageKit(
+        req.files.banner[0].buffer,
+        `store_banner_${Date.now()}`,
+      );
+    }
+
+    // Build update with only provided fields
     const updateData = {};
     if (name) updateData.name = name;
     if (description) updateData.description = description;
     if (category) updateData.category = category;
+    if (phone) updateData.phone = phone;
+    if (gst) updateData.gst = gst;
     if (logoUrl) updateData.logo = logoUrl;
+    if (bannerUrl) updateData.banner = bannerUrl;
 
     if (street || city || state || pincode) {
       updateData.address = {
@@ -231,7 +261,6 @@ const updateStore = async (req, res) => {
       };
     }
 
-    // 5. Update
     const updatedStore = await storeModel
       .findByIdAndUpdate(req.params.id, updateData, {
         new: true,
@@ -246,10 +275,7 @@ const updateStore = async (req, res) => {
     });
   } catch (error) {
     console.error("Update store error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 
@@ -262,13 +288,11 @@ const deleteStore = async (req, res) => {
     const store = await storeModel.findById(req.params.id);
 
     if (!store) {
-      return res.status(404).json({
-        success: false,
-        message: "Store not found",
-      });
+      return res
+        .status(404)
+        .json({ success: false, message: "Store not found" });
     }
 
-    // Only owner can delete
     if (store.owner.toString() !== req.user.id) {
       return res.status(403).json({
         success: false,
@@ -276,19 +300,14 @@ const deleteStore = async (req, res) => {
       });
     }
 
-    // Soft delete — just set isActive false
     await storeModel.findByIdAndUpdate(req.params.id, { isActive: false });
 
-    res.status(200).json({
-      success: true,
-      message: "Store deleted successfully",
-    });
+    res
+      .status(200)
+      .json({ success: true, message: "Store deleted successfully" });
   } catch (error) {
     console.error("Delete store error:", error.message);
-    res.status(500).json({
-      success: false,
-      message: "Server error",
-    });
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
 

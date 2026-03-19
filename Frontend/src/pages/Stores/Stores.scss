@@ -256,6 +256,37 @@
   margin-top: v.$sp-2;
 }
 
+// ─── BANNER PLACEHOLDER ───────────────────────────────────────────────────────
+.store-card__banner-placeholder {
+  width: 100%;
+  height: 100%;
+  background: v.$black;
+  background-image:
+    linear-gradient(rgba(255, 207, 64, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 207, 64, 0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+// ─── LOGO INITIALS PLACEHOLDER ────────────────────────────────────────────────
+.store-card__logo-init {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  background: v.$yellow;
+  font-family: v.$font-display;
+  font-size: 18px;
+  font-weight: 900;
+  color: v.$black;
+}
+
+// ─── PHONE ────────────────────────────────────────────────────────────────────
+.store-card__phone {
+  font-size: 12px;
+  color: v.$text-muted;
+}
+
 // ─── FEATURED STORES ─────────────────────────────────────────────────────────
 .stores-featured {
   padding-block: v.$sp-16 v.$sp-12;

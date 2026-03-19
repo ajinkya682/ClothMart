@@ -17,7 +17,7 @@ const StoreSkeleton = () => (
 
 // ── Store Card ────────────────────────────────────────────────────────────────
 const StoreCard = ({ store }) => (
-  <Link to={`/store/${store._id}`} className="store-card">
+  <Link to={`/stores/${store._id}`} className="store-card">
     <div className="store-card__banner">
       {store.banner ? (
         <img src={store.banner} alt={store.name} loading="lazy" />

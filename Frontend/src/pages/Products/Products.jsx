@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
+import api from "../../utils/api";
 import "./Products.scss";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -18,285 +19,15 @@ const CATEGORIES = [
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL"];
 
 const SORT_OPTIONS = [
-  { value: "popular", label: "Most Popular" },
   { value: "newest", label: "Newest First" },
   { value: "price_asc", label: "Price: Low → High" },
   { value: "price_desc", label: "Price: High → Low" },
-  { value: "rating", label: "Top Rated" },
-  { value: "discount", label: "Best Discount" },
 ];
 
 const RATING_FILTERS = [
   { value: 4, label: "4★ & above" },
   { value: 3, label: "3★ & above" },
   { value: 0, label: "All ratings" },
-];
-
-const MOCK_PRODUCTS = [
-  {
-    _id: "p1",
-    name: "Linen Relaxed Shirt",
-    slug: "linen-relaxed-shirt",
-    store: { name: "Thread & Co.", slug: "thread-co" },
-    category: "Men's Fashion",
-    images: [
-      "https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=500&q=80",
-    ],
-    price: 2499,
-    discountPrice: 1799,
-    discountPercent: 28,
-    rating: 4.6,
-    reviewCount: 214,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["White", "Beige", "Sky Blue"],
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-    joinedAt: "2023-03-10",
-    popularity: 92,
-  },
-  {
-    _id: "p2",
-    name: "Floral Wrap Midi Dress",
-    slug: "floral-wrap-midi-dress",
-    store: { name: "Velvet Noir", slug: "velvet-noir" },
-    category: "Women's Fashion",
-    images: [
-      "https://images.unsplash.com/photo-1572804013309-59a88b7e92f1?w=500&q=80",
-    ],
-    price: 3999,
-    discountPrice: 2999,
-    discountPercent: 25,
-    rating: 4.8,
-    reviewCount: 389,
-    sizes: ["XS", "S", "M", "L"],
-    colors: ["Floral Pink", "Floral Blue"],
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2024-01-05",
-    popularity: 97,
-  },
-  {
-    _id: "p3",
-    name: "Banarasi Silk Kurta Set",
-    slug: "banarasi-silk-kurta-set",
-    store: { name: "Rang Mahal", slug: "rang-mahal" },
-    category: "Ethnic Wear",
-    images: [
-      "https://images.unsplash.com/photo-1583391733956-6c78276477e2?w=500&q=80",
-    ],
-    price: 5499,
-    discountPrice: 4199,
-    discountPercent: 24,
-    rating: 4.9,
-    reviewCount: 562,
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Royal Blue", "Maroon", "Emerald"],
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-    joinedAt: "2022-11-20",
-    popularity: 99,
-  },
-  {
-    _id: "p4",
-    name: "Oversized Graphic Hoodie",
-    slug: "oversized-graphic-hoodie",
-    store: { name: "Urban Stitch", slug: "urban-stitch" },
-    category: "Streetwear",
-    images: [
-      "https://images.unsplash.com/photo-1556821840-3a63f15732ce?w=500&q=80",
-    ],
-    price: 2199,
-    discountPrice: 1649,
-    discountPercent: 25,
-    rating: 4.5,
-    reviewCount: 178,
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Black", "Washed Grey", "Cream"],
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2024-02-14",
-    popularity: 85,
-  },
-  {
-    _id: "p5",
-    name: "Kids Rainbow Dungaree",
-    slug: "kids-rainbow-dungaree",
-    store: { name: "Tiny Threads", slug: "tiny-threads" },
-    category: "Kids' Wear",
-    images: [
-      "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?w=500&q=80",
-    ],
-    price: 1299,
-    discountPrice: 899,
-    discountPercent: 31,
-    rating: 4.7,
-    reviewCount: 304,
-    sizes: ["S", "M", "L"],
-    colors: ["Rainbow", "Denim Blue"],
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-    joinedAt: "2023-06-01",
-    popularity: 88,
-  },
-  {
-    _id: "p6",
-    name: "Cashmere Turtleneck Sweater",
-    slug: "cashmere-turtleneck-sweater",
-    store: { name: "Frost & Wool", slug: "frost-wool" },
-    category: "Winterwear",
-    images: [
-      "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=500&q=80",
-    ],
-    price: 7999,
-    discountPrice: 5999,
-    discountPercent: 25,
-    rating: 4.8,
-    reviewCount: 143,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Camel", "Charcoal", "Ivory"],
-    isNew: false,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2023-09-22",
-    popularity: 76,
-  },
-  {
-    _id: "p7",
-    name: "Yoga Flex Leggings",
-    slug: "yoga-flex-leggings",
-    store: { name: "FlexFit Studio", slug: "flexfit-studio" },
-    category: "Activewear",
-    images: [
-      "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=500&q=80",
-    ],
-    price: 1899,
-    discountPrice: 1399,
-    discountPercent: 26,
-    rating: 4.6,
-    reviewCount: 421,
-    sizes: ["XS", "S", "M", "L", "XL"],
-    colors: ["Black", "Navy", "Olive"],
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-    joinedAt: "2023-04-18",
-    popularity: 93,
-  },
-  {
-    _id: "p8",
-    name: "Block Print Linen Co-ord",
-    slug: "block-print-linen-coord",
-    store: { name: "Loom & Grace", slug: "loom-grace" },
-    category: "Women's Fashion",
-    images: [
-      "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=500&q=80",
-    ],
-    price: 3299,
-    discountPrice: 2499,
-    discountPercent: 24,
-    rating: 4.7,
-    reviewCount: 267,
-    sizes: ["XS", "S", "M", "L", "XL"],
-    colors: ["Indigo", "Terracotta", "Sage"],
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2024-01-30",
-    popularity: 89,
-  },
-  {
-    _id: "p9",
-    name: "Slim Fit Chino Trousers",
-    slug: "slim-fit-chino-trousers",
-    store: { name: "Thread & Co.", slug: "thread-co" },
-    category: "Men's Fashion",
-    images: [
-      "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&q=80",
-    ],
-    price: 2799,
-    discountPrice: 1999,
-    discountPercent: 29,
-    rating: 4.4,
-    reviewCount: 198,
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Khaki", "Olive", "Navy"],
-    isNew: false,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2023-05-12",
-    popularity: 78,
-  },
-  {
-    _id: "p10",
-    name: "Anarkali Embroidered Kurta",
-    slug: "anarkali-embroidered-kurta",
-    store: { name: "Rang Mahal", slug: "rang-mahal" },
-    category: "Ethnic Wear",
-    images: [
-      "https://images.unsplash.com/photo-1585487000160-6ebcfceb0d03?w=500&q=80",
-    ],
-    price: 4499,
-    discountPrice: 3299,
-    discountPercent: 27,
-    rating: 4.8,
-    reviewCount: 476,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Rose Gold", "Teal", "Peach"],
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-    joinedAt: "2023-02-08",
-    popularity: 96,
-  },
-  {
-    _id: "p11",
-    name: "Cargo Jogger Pants",
-    slug: "cargo-jogger-pants",
-    store: { name: "Urban Stitch", slug: "urban-stitch" },
-    category: "Streetwear",
-    images: [
-      "https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=500&q=80",
-    ],
-    price: 2499,
-    discountPrice: 1899,
-    discountPercent: 24,
-    rating: 4.3,
-    reviewCount: 132,
-    sizes: ["S", "M", "L", "XL", "XXL"],
-    colors: ["Olive", "Black", "Stone"],
-    isNew: false,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2023-07-25",
-    popularity: 72,
-  },
-  {
-    _id: "p12",
-    name: "Puffer Jacket — Quilted",
-    slug: "puffer-jacket-quilted",
-    store: { name: "Frost & Wool", slug: "frost-wool" },
-    category: "Winterwear",
-    images: [
-      "https://images.unsplash.com/photo-1544923246-77307dd654cb?w=500&q=80",
-    ],
-    price: 8999,
-    discountPrice: 6499,
-    discountPercent: 28,
-    rating: 4.7,
-    reviewCount: 201,
-    sizes: ["S", "M", "L", "XL"],
-    colors: ["Black", "Dusty Pink", "Forest Green"],
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-    joinedAt: "2024-01-10",
-    popularity: 84,
-  },
 ];
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -379,6 +110,7 @@ function WishlistButton({ productId, className = "" }) {
 // ─── ProductCard ──────────────────────────────────────────────────────────────
 function ProductCard({ product, style }) {
   const { addToCart } = useCart();
+  const navigate = useNavigate(); // ✅ Fixed: inside component
   const [selectedSize, setSelectedSize] = useState("");
   const [addedAnim, setAddedAnim] = useState(false);
 
@@ -396,16 +128,20 @@ function ProductCard({ product, style }) {
     setSelectedSize((s) => (s === size ? "" : size));
   };
 
+  // Use slug if available, fallback to _id
+  const productLink = `/products/${product.slug || product._id}`;
+  const discount = product.discountPrice
+    ? Math.round(
+        ((product.price - product.discountPrice) / product.price) * 100,
+      )
+    : null;
+
   return (
-    <Link
-      to={`/products/${product.slug}`}
-      className="product-card"
-      style={style}
-    >
+    <Link to={productLink} className="product-card" style={style}>
       {/* Image */}
       <div className="product-card__img-wrap">
         <img
-          src={product.images[0]}
+          src={product.images?.[0] || "/placeholder.jpg"}
           alt={product.name}
           className="product-card__img"
           loading="lazy"
@@ -413,14 +149,8 @@ function ProductCard({ product, style }) {
 
         {/* Badges */}
         <div className="product-card__badges">
-          {product.discountPercent > 0 && (
-            <span className="pc-badge pc-badge--discount">
-              -{product.discountPercent}%
-            </span>
-          )}
-          {product.isNew && <span className="pc-badge pc-badge--new">New</span>}
-          {product.isBestseller && (
-            <span className="pc-badge pc-badge--best">Bestseller</span>
+          {discount > 0 && (
+            <span className="pc-badge pc-badge--discount">-{discount}%</span>
           )}
         </div>
 
@@ -430,19 +160,21 @@ function ProductCard({ product, style }) {
           className="product-card__wishlist"
         />
 
-        {/* Quick Add to Cart overlay */}
+        {/* Quick Add overlay */}
         <div className="product-card__overlay">
-          <div className="product-card__sizes-row">
-            {product.sizes.map((size) => (
-              <button
-                key={size}
-                className={`product-card__size${selectedSize === size ? " product-card__size--active" : ""}`}
-                onClick={(e) => handleSizeClick(e, size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
+          {product.sizes?.length > 0 && (
+            <div className="product-card__sizes-row">
+              {product.sizes.map((size) => (
+                <button
+                  key={size}
+                  className={`product-card__size${selectedSize === size ? " product-card__size--active" : ""}`}
+                  onClick={(e) => handleSizeClick(e, size)}
+                >
+                  {size}
+                </button>
+              ))}
+            </div>
+          )}
           <button
             className={`product-card__cart-btn${addedAnim ? " product-card__cart-btn--added" : ""}`}
             onClick={handleAddToCart}
@@ -455,42 +187,51 @@ function ProductCard({ product, style }) {
 
       {/* Body */}
       <div className="product-card__body">
-        {/* Store */}
-        <Link
-          to={`/stores/${product.store.slug}`}
-          className="product-card__store"
-          onClick={(e) => e.stopPropagation()}
-        >
-          {product.store.name}
-        </Link>
+        {/* Store — span with navigate, not nested Link */}
+        {product.store && (
+          <span
+            className="product-card__store"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              navigate(`/stores/${product.store?.slug || product.store?._id}`);
+            }}
+          >
+            {product.store?.name}
+          </span>
+        )}
 
         {/* Name */}
         <h3 className="product-card__name">{product.name}</h3>
 
         {/* Rating */}
-        <div className="product-card__rating">
-          <StarIcon />
-          <span className="product-card__rating-num">
-            {product.rating.toFixed(1)}
-          </span>
-          <span className="product-card__rating-cnt">
-            ({product.reviewCount})
-          </span>
-        </div>
+        {product.rating > 0 && (
+          <div className="product-card__rating">
+            <StarIcon />
+            <span className="product-card__rating-num">
+              {product.rating.toFixed(1)}
+            </span>
+            <span className="product-card__rating-cnt">
+              ({product.reviewCount || 0})
+            </span>
+          </div>
+        )}
 
         {/* Sizes preview */}
-        <div className="product-card__size-preview">
-          {product.sizes.slice(0, 5).map((s) => (
-            <span key={s} className="product-card__size-dot">
-              {s}
-            </span>
-          ))}
-          {product.sizes.length > 5 && (
-            <span className="product-card__size-dot product-card__size-dot--more">
-              +{product.sizes.length - 5}
-            </span>
-          )}
-        </div>
+        {product.sizes?.length > 0 && (
+          <div className="product-card__size-preview">
+            {product.sizes.slice(0, 5).map((s) => (
+              <span key={s} className="product-card__size-dot">
+                {s}
+              </span>
+            ))}
+            {product.sizes.length > 5 && (
+              <span className="product-card__size-dot product-card__size-dot--more">
+                +{product.sizes.length - 5}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Price */}
         <div className="product-card__price-row">
@@ -525,9 +266,7 @@ function FilterSidebar({
 }) {
   return (
     <>
-      {/* Mobile backdrop */}
       {isOpen && <div className="filter-backdrop" onClick={onClose} />}
-
       <aside
         className={`filter-sidebar${isOpen ? " filter-sidebar--open" : ""}`}
       >
@@ -535,7 +274,7 @@ function FilterSidebar({
           <h3 className="filter-sidebar__title">Filters</h3>
           {activeCount > 0 && (
             <button className="filter-sidebar__clear" onClick={onClear}>
-              Clear all
+              Clear all{" "}
               <span className="filter-sidebar__badge">{activeCount}</span>
             </button>
           )}
@@ -672,21 +411,40 @@ export default function Products() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-  const [sortBy, setSortBy] = useState("popular");
+  const [sortBy, setSortBy] = useState("newest");
   const [priceRange, setPriceRange] = useState([0, 10000]);
   const [selectedSizes, setSelectedSizes] = useState([]);
   const [minRating, setMinRating] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [wishlistIds, setWishlistIds] = useState(new Set());
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
+  // ── Fetch from real API ────────────────────────────────────────────────────
   useEffect(() => {
-    // 🔁 Replace with: api.get("/products").then(r => setProducts(r.data.products))
-    const t = setTimeout(() => {
-      setProducts(MOCK_PRODUCTS);
-      setLoading(false);
-    }, 700);
-    return () => clearTimeout(t);
-  }, []);
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const params = {
+          page,
+          limit: 12,
+          sort: sortBy,
+        };
+        if (search) params.search = search;
+        if (activeCategory !== "All") params.category = activeCategory;
+        if (priceRange[0] > 0) params.minPrice = priceRange[0];
+        if (priceRange[1] < 10000) params.maxPrice = priceRange[1];
+
+        const res = await api.get("/products", { params });
+        setProducts(res.data.products || []);
+        setTotalPages(res.data.pages || 1);
+      } catch {
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [search, activeCategory, sortBy, priceRange, page]);
 
   const toggleSize = useCallback((size) => {
     setSelectedSizes((prev) =>
@@ -697,11 +455,23 @@ export default function Products() {
   const clearAll = useCallback(() => {
     setSearch("");
     setActiveCategory("All");
-    setSortBy("popular");
+    setSortBy("newest");
     setPriceRange([0, 10000]);
     setSelectedSizes([]);
     setMinRating(0);
+    setPage(1);
   }, []);
+
+  // Client-side size + rating filter (API doesn't support these)
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      const matchSize =
+        selectedSizes.length === 0 ||
+        selectedSizes.some((s) => p.sizes?.includes(s));
+      const matchRating = p.rating >= minRating;
+      return matchSize && matchRating;
+    });
+  }, [products, selectedSizes, minRating]);
 
   const activeFilterCount = useMemo(
     () =>
@@ -713,51 +483,9 @@ export default function Products() {
     [search, activeCategory, priceRange, selectedSizes, minRating],
   );
 
-  const filtered = useMemo(() => {
-    const q = search.toLowerCase();
-    return products
-      .filter((p) => {
-        const matchSearch =
-          p.name.toLowerCase().includes(q) ||
-          p.store.name.toLowerCase().includes(q) ||
-          p.category.toLowerCase().includes(q);
-        const matchCat =
-          activeCategory === "All" || p.category === activeCategory;
-        const matchPrice =
-          (p.discountPrice || p.price) >= priceRange[0] &&
-          (p.discountPrice || p.price) <= priceRange[1];
-        const matchSize =
-          selectedSizes.length === 0 ||
-          selectedSizes.some((s) => p.sizes.includes(s));
-        const matchRating = p.rating >= minRating;
-        return (
-          matchSearch && matchCat && matchPrice && matchSize && matchRating
-        );
-      })
-      .sort((a, b) => {
-        if (sortBy === "newest")
-          return new Date(b.joinedAt) - new Date(a.joinedAt);
-        if (sortBy === "price_asc")
-          return (a.discountPrice || a.price) - (b.discountPrice || b.price);
-        if (sortBy === "price_desc")
-          return (b.discountPrice || b.price) - (a.discountPrice || a.price);
-        if (sortBy === "rating") return b.rating - a.rating;
-        if (sortBy === "discount") return b.discountPercent - a.discountPercent;
-        return b.popularity - a.popularity; // popular (default)
-      });
-  }, [
-    products,
-    search,
-    activeCategory,
-    priceRange,
-    selectedSizes,
-    minRating,
-    sortBy,
-  ]);
-
   return (
     <main className="products-page">
-      {/* ── Hero / Top bar ───────────────────────────────────────────────── */}
+      {/* ── Hero / Top bar ────────────────────────────────────────────────── */}
       <section className="products-hero">
         <div className="products-hero__bg" aria-hidden />
         <div className="products-hero__container">
@@ -769,7 +497,7 @@ export default function Products() {
             <p className="products-hero__sub">
               {loading
                 ? "Loading…"
-                : `${products.length} styles from top clothing brands across India`}
+                : `${filtered.length} styles from top clothing brands across India`}
             </p>
           </div>
 
@@ -800,7 +528,10 @@ export default function Products() {
               type="text"
               placeholder="Search clothes, brands, styles…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={(e) => {
+                setSearch(e.target.value);
+                setPage(1);
+              }}
               className="products-hero__search-input"
             />
             {search && (
@@ -823,15 +554,20 @@ export default function Products() {
         </div>
       </section>
 
-      {/* ── Body: Sidebar + Grid ─────────────────────────────────────────── */}
+      {/* ── Body ─────────────────────────────────────────────────────────── */}
       <div className="products-body">
         <div className="products-body__container">
-          {/* Sidebar */}
           <FilterSidebar
             activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
+            setActiveCategory={(c) => {
+              setActiveCategory(c);
+              setPage(1);
+            }}
             priceRange={priceRange}
-            setPriceRange={setPriceRange}
+            setPriceRange={(r) => {
+              setPriceRange(r);
+              setPage(1);
+            }}
             selectedSizes={selectedSizes}
             toggleSize={toggleSize}
             minRating={minRating}
@@ -842,12 +578,10 @@ export default function Products() {
             onClose={() => setSidebarOpen(false)}
           />
 
-          {/* Main content */}
           <div className="products-main">
             {/* Toolbar */}
             <div className="products-toolbar">
               <div className="products-toolbar__left">
-                {/* Mobile filter toggle */}
                 <button
                   className="products-toolbar__filter-btn"
                   onClick={() => setSidebarOpen(true)}
@@ -928,7 +662,10 @@ export default function Products() {
                 <select
                   className="products-toolbar__sort"
                   value={sortBy}
-                  onChange={(e) => setSortBy(e.target.value)}
+                  onChange={(e) => {
+                    setSortBy(e.target.value);
+                    setPage(1);
+                  }}
                 >
                   {SORT_OPTIONS.map((o) => (
                     <option key={o.value} value={o.value}>
@@ -967,15 +704,40 @@ export default function Products() {
                 </button>
               </div>
             ) : (
-              <div className="products-grid">
-                {filtered.map((product, i) => (
-                  <ProductCard
-                    key={product._id}
-                    product={product}
-                    style={{ animationDelay: `${i * 0.055}s` }}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="products-grid">
+                  {filtered.map((product, i) => (
+                    <ProductCard
+                      key={product._id}
+                      product={product}
+                      style={{ animationDelay: `${i * 0.055}s` }}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="products-pagination">
+                    <button
+                      className="products-pagination__btn"
+                      disabled={page === 1}
+                      onClick={() => setPage((p) => p - 1)}
+                    >
+                      ← Prev
+                    </button>
+                    <span className="products-pagination__info">
+                      Page {page} of {totalPages}
+                    </span>
+                    <button
+                      className="products-pagination__btn"
+                      disabled={page === totalPages}
+                      onClick={() => setPage((p) => p + 1)}
+                    >
+                      Next →
+                    </button>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>

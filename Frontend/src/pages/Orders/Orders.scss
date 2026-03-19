@@ -1,0 +1,410 @@
+@use "../../styles/base/variables" as v;
+@use "../../styles/base/mixins" as m;
+
+.orders-page {
+  min-height: 100vh;
+  background: v.$bg-main;
+  padding: calc(68px + v.$sp-8) 0 v.$sp-20;
+}
+
+.orders-container {
+  @include m.container;
+  @include m.flex(column, stretch, flex-start, v.$sp-6);
+}
+
+// ─── SUCCESS BANNER ───────────────────────────────────────────────────────────
+.orders-success-banner {
+  @include m.flex(row, center, flex-start, v.$sp-4);
+  background: rgba(22, 163, 74, 0.08);
+  border: 1.5px solid rgba(22, 163, 74, 0.25);
+  border-radius: v.$r-xl;
+  padding: v.$sp-5 v.$sp-6;
+  animation: fadeUp 0.4s ease both;
+
+  &__icon {
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  &__title {
+    font-size: 16px;
+    font-weight: 800;
+    color: v.$success;
+    font-family: v.$font-display;
+  }
+  &__sub {
+    font-size: 13px;
+    color: v.$text-secondary;
+    margin-top: 3px;
+  }
+}
+
+// ─── HEADER ──────────────────────────────────────────────────────────────────
+.orders-header {
+  @include m.flex-between;
+  flex-wrap: wrap;
+  gap: v.$sp-4;
+}
+
+.orders-title {
+  @include m.display(32px);
+  color: v.$text-primary;
+  line-height: 1;
+}
+.orders-sub {
+  font-size: 13px;
+  color: v.$text-muted;
+  margin-top: 4px;
+}
+
+.orders-shop-btn {
+  background: v.$yellow;
+  color: v.$black;
+  border-radius: v.$r-md;
+  padding: 11px v.$sp-5;
+  font-size: 13px;
+  font-weight: 800;
+  text-decoration: none;
+  transition: v.$t-fast;
+  &:hover {
+    background: v.$yellow-hover;
+  }
+}
+
+// ─── FILTERS ─────────────────────────────────────────────────────────────────
+.orders-filters {
+  @include m.flex(row, center, flex-start, v.$sp-2);
+  flex-wrap: wrap;
+}
+
+.orders-filter {
+  @include m.flex(row, center, flex-start, v.$sp-2);
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 6%);
+  border-radius: v.$r-full;
+  padding: 8px v.$sp-4;
+  font-size: 13px;
+  font-weight: 700;
+  color: v.$text-secondary;
+  cursor: pointer;
+  transition: v.$t-fast;
+  font-family: v.$font-body;
+
+  &:hover {
+    border-color: v.$yellow;
+    color: v.$text-primary;
+  }
+
+  &--active {
+    background: v.$yellow;
+    border-color: v.$yellow;
+    color: v.$black;
+    .orders-filter__count {
+      background: v.$black;
+      color: v.$yellow;
+    }
+  }
+
+  &__count {
+    background: darken(v.$bg-alt, 10%);
+    color: v.$text-muted;
+    border-radius: v.$r-full;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 1px 6px;
+    font-family: v.$font-mono;
+  }
+}
+
+// ─── LIST ─────────────────────────────────────────────────────────────────────
+.orders-list {
+  @include m.flex(column, stretch, flex-start, v.$sp-4);
+}
+
+// ─── ORDER CARD ───────────────────────────────────────────────────────────────
+.order-card {
+  background: v.$bg-card;
+  border: 1.5px solid darken(v.$bg-alt, 5%);
+  border-radius: v.$r-xl;
+  overflow: hidden;
+  transition: v.$t-base;
+  animation: fadeUp 0.4s ease both;
+
+  &:hover {
+    box-shadow: v.$shadow-sm;
+  }
+
+  &--new {
+    border-color: v.$yellow;
+    box-shadow: 0 0 0 3px rgba(255, 207, 64, 0.15);
+  }
+
+  &__head {
+    @include m.flex(row, center, space-between, v.$sp-4);
+    padding: v.$sp-5 v.$sp-6;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    &:hover {
+      background: v.$bg-alt;
+    }
+    @include m.below-sm {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  &__head-left {
+    @include m.flex(row, center, flex-start, v.$sp-4);
+    @include m.below-sm {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: v.$sp-2;
+    }
+  }
+
+  &__head-right {
+    @include m.flex(row, center, flex-end, v.$sp-3);
+    flex-shrink: 0;
+  }
+
+  &__id {
+    font-size: 14px;
+    font-weight: 800;
+    color: v.$text-primary;
+    font-family: v.$font-mono;
+  }
+
+  &__date {
+    font-size: 12px;
+    color: v.$text-muted;
+    margin-top: 2px;
+  }
+
+  &__badges {
+    @include m.flex(row, center, flex-start, v.$sp-2);
+  }
+
+  &__status {
+    font-size: 11px;
+    font-weight: 800;
+    border-radius: v.$r-full;
+    padding: 3px 10px;
+    font-family: v.$font-mono;
+    letter-spacing: 0.05em;
+  }
+
+  &__payment {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: v.$font-mono;
+  }
+
+  &__total {
+    font-size: 18px;
+    font-weight: 900;
+    color: v.$text-primary;
+    font-family: v.$font-mono;
+  }
+
+  &__chevron {
+    font-size: 14px;
+    color: v.$text-muted;
+    transition: transform 0.25s ease;
+    &--open {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__body {
+    @include m.flex(column, stretch, flex-start, v.$sp-5);
+    padding: 0 v.$sp-6 v.$sp-6;
+    border-top: 1px solid darken(v.$bg-alt, 5%);
+    padding-top: v.$sp-5;
+  }
+
+  &__foot {
+    @include m.flex-between;
+    padding-top: v.$sp-4;
+    border-top: 1px solid darken(v.$bg-alt, 5%);
+    &-label {
+      font-size: 13px;
+      font-weight: 700;
+      color: v.$text-secondary;
+    }
+    &-total {
+      font-size: 18px;
+      font-weight: 900;
+      color: v.$text-primary;
+      font-family: v.$font-mono;
+    }
+  }
+}
+
+// ─── PROGRESS TRACKER ────────────────────────────────────────────────────────
+.order-progress {
+  @include m.flex(row, center, flex-start, 0);
+  padding: v.$sp-4 0;
+  overflow-x: auto;
+}
+
+.order-progress__step {
+  @include m.flex(column, center, center, v.$sp-2);
+  position: relative;
+  flex: 1;
+  min-width: 80px;
+}
+
+.order-progress__dot {
+  width: 28px;
+  height: 28px;
+  border-radius: v.$r-full;
+  border: 2px solid darken(v.$bg-alt, 15%);
+  background: v.$bg-card;
+  @include m.flex-center;
+  font-size: 12px;
+  color: v.$white;
+  font-weight: 800;
+  z-index: 1;
+  transition: v.$t-base;
+  flex-shrink: 0;
+
+  &--done {
+    background: v.$success;
+    border-color: v.$success;
+  }
+  &--current {
+    background: v.$yellow;
+    border-color: v.$yellow;
+    color: v.$black;
+    box-shadow: 0 0 0 4px rgba(255, 207, 64, 0.2);
+  }
+}
+
+.order-progress__line {
+  position: absolute;
+  top: 14px;
+  left: 60%;
+  right: -40%;
+  height: 2px;
+  background: darken(v.$bg-alt, 10%);
+  z-index: 0;
+  &--done {
+    background: v.$success;
+  }
+}
+
+.order-progress__label {
+  font-size: 11px;
+  font-weight: 600;
+  color: v.$text-muted;
+  text-align: center;
+  white-space: nowrap;
+  &--current {
+    color: v.$text-primary;
+    font-weight: 800;
+  }
+}
+
+// ─── ORDER ITEMS ─────────────────────────────────────────────────────────────
+.order-items {
+  @include m.flex(column, stretch, flex-start, v.$sp-3);
+}
+
+.order-item {
+  @include m.flex(row, center, flex-start, v.$sp-3);
+
+  &__img {
+    width: 52px;
+    height: 60px;
+    border-radius: v.$r-md;
+    overflow: hidden;
+    background: v.$bg-alt;
+    flex-shrink: 0;
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+  &__name {
+    font-size: 14px;
+    font-weight: 700;
+    color: v.$text-primary;
+    @include m.truncate;
+  }
+  &__meta {
+    font-size: 12px;
+    color: v.$text-muted;
+    margin-top: 2px;
+  }
+  &__price {
+    font-size: 14px;
+    font-weight: 800;
+    color: v.$text-primary;
+    font-family: v.$font-mono;
+    white-space: nowrap;
+  }
+}
+
+// ─── DELIVERY ADDRESS ─────────────────────────────────────────────────────────
+.order-addr {
+  background: v.$bg-alt;
+  border-radius: v.$r-md;
+  padding: v.$sp-4;
+  border: 1px solid darken(v.$bg-alt, 6%);
+
+  &__label {
+    font-size: 12px;
+    font-weight: 700;
+    color: v.$text-secondary;
+    margin-bottom: v.$sp-1;
+  }
+  &__text {
+    font-size: 13px;
+    color: v.$text-primary;
+    line-height: 1.6;
+  }
+}
+
+// ─── SHIMMER ─────────────────────────────────────────────────────────────────
+.order-shimmer {
+  height: 80px;
+  border-radius: v.$r-xl;
+  @include m.shimmer;
+}
+
+// ─── EMPTY ───────────────────────────────────────────────────────────────────
+.orders-empty {
+  @include m.flex(column, center, center, v.$sp-4);
+  padding: v.$sp-20;
+  text-align: center;
+
+  &__icon {
+    font-size: 48px;
+  }
+  &__title {
+    @include m.display(24px);
+    color: v.$text-primary;
+  }
+  &__sub {
+    font-size: 14px;
+    color: v.$text-muted;
+  }
+  &__btn {
+    background: v.$yellow;
+    color: v.$black;
+    border-radius: v.$r-md;
+    padding: 12px v.$sp-8;
+    font-size: 14px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: v.$t-fast;
+    &:hover {
+      background: v.$yellow-hover;
+    }
+  }
+}

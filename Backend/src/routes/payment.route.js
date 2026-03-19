@@ -2,15 +2,17 @@ const express = require("express");
 const router = express.Router();
 const authMiddleware = require("../middleware/auth.middleware");
 const {
-  createPayment,
-  verifyPayment,
-  getPaymentDetails,
+  createPaymentIntent,
+  verifyAndCreateOrder,
 } = require("../controllers/payment.controller");
 
-router.post("/create", authMiddleware, createPayment);
+// All payment routes require authentication
+router.use(authMiddleware);
 
-router.post("/verify", authMiddleware, verifyPayment);
+// Step 1 — Create Razorpay order (no DB order created yet)
+router.post("/create-intent", createPaymentIntent);
 
-router.get("/:orderId", authMiddleware, getPaymentDetails);
+// Step 2 — Verify payment signature → create DB order
+router.post("/verify-and-create-order", verifyAndCreateOrder);
 
 module.exports = router;
