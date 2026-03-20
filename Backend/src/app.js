@@ -19,7 +19,22 @@ const app = express();
 // ✅ REPLACE WITH THIS
 app.use(
   cors({
-    origin: ["http://localhost:5173", "https://cloth-mart.vercel.app"],
+    origin: function (origin, callback) {
+      const allowed = [
+        "http://localhost:5173",
+        "https://cloth-mart.vercel.app",
+      ];
+      // allow all vercel preview URLs
+      if (
+        !origin ||
+        allowed.includes(origin) ||
+        origin.endsWith(".vercel.app")
+      ) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization"],
