@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import api from "../../utils/api";
-import "./Register.scss";
+import { Eye, EyeOff, CheckCircle2, ChevronRight, ChevronLeft, User, Store, LoaderCircle, AlertCircle, Upload, Check } from "lucide-react";
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 const STORE_CATEGORIES = [
@@ -20,84 +20,6 @@ const STORE_CATEGORIES = [
 
 const STEPS_CUSTOMER = ["Account", "Profile", "Done"];
 const STEPS_STORE_OWNER = ["Account", "Store Info", "Media & Address", "Done"];
-
-// ─── Icons ────────────────────────────────────────────────────────────────────
-const EyeIcon = ({ open }) =>
-  open ? (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  ) : (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <line
-        x1="1"
-        y1="1"
-        x2="23"
-        y2="23"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-
-const CheckIcon = () => (
-  <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-    <path
-      d="M20 6L9 17l-5-5"
-      stroke="currentColor"
-      strokeWidth="2.5"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-const UploadIcon = () => (
-  <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-    <path
-      d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <polyline
-      points="17 8 12 3 7 8"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    />
-    <line
-      x1="12"
-      y1="3"
-      x2="12"
-      y2="15"
-      stroke="currentColor"
-      strokeWidth="1.8"
-      strokeLinecap="round"
-    />
-  </svg>
-);
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 function validate(fields, data) {
@@ -138,21 +60,17 @@ function PasswordStrength({ password }) {
   ];
   const score = checks.filter(Boolean).length;
   const labels = ["", "Weak", "Fair", "Good", "Strong"];
-  const colors = ["", "#dc2626", "#d97706", "#16a34a", "#16a34a"];
+  const colors = ["", "bg-red-500", "bg-amber-500", "bg-green-500", "bg-green-600"];
+  const textColors = ["", "text-red-500", "text-amber-500", "text-green-500", "text-green-600"];
+  
   return (
-    <div className="pwd-strength">
-      <div className="pwd-strength__bars">
+    <div className="mt-2 flex items-center justify-between">
+      <div className="flex gap-1 flex-1 mr-4">
         {[1, 2, 3, 4].map((i) => (
-          <div
-            key={i}
-            className="pwd-strength__bar"
-            style={{ background: i <= score ? colors[score] : undefined }}
-          />
+          <div key={i} className={`h-1 flex-1 rounded-full ${i <= score ? colors[score] : 'bg-gray-200'}`} />
         ))}
       </div>
-      <span className="pwd-strength__label" style={{ color: colors[score] }}>
-        {labels[score]}
-      </span>
+      <span className={`text-xs font-medium ${textColors[score]}`}>{labels[score]}</span>
     </div>
   );
 }
@@ -171,40 +89,30 @@ function ImageUpload({ label, name, value, onChange, hint, round = false }) {
   const preview = value instanceof File ? URL.createObjectURL(value) : null;
 
   return (
-    <div className="img-upload">
-      <label className="form-label">{label}</label>
+    <div className="mb-6">
+      <label className="block text-sm font-semibold text-gray-900 mb-2">{label}</label>
       <div
-        className={`img-upload__zone${round ? " img-upload__zone--round" : ""}${preview ? " img-upload__zone--has-img" : ""}`}
+        className={`relative border-2 border-dashed ${preview ? 'border-black' : 'border-gray-200 hover:border-gray-400'} bg-gray-50 flex flex-col items-center justify-center p-6 cursor-pointer transition-colors ${round ? 'w-32 h-32 rounded-full mx-auto' : 'w-full h-32 rounded-2xl'}`}
         onClick={() => ref.current.click()}
         onDrop={handleDrop}
         onDragOver={(e) => e.preventDefault()}
       >
         {preview ? (
-          <img
-            src={preview}
-            alt="preview"
-            className={`img-upload__preview${round ? " img-upload__preview--round" : ""}`}
-          />
+          <>
+            <img src={preview} alt="preview" className={`w-full h-full object-cover ${round ? 'rounded-full' : 'rounded-xl'}`} />
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity rounded-full md:rounded-xl">
+              <span className="text-white text-xs font-bold">Change</span>
+            </div>
+          </>
         ) : (
-          <div className="img-upload__placeholder">
-            <UploadIcon />
-            <span className="img-upload__text">Click or drag to upload</span>
-            {hint && <span className="img-upload__hint">{hint}</span>}
-          </div>
-        )}
-        {preview && (
-          <div className="img-upload__change">
-            <span>Change</span>
+          <div className="text-center flex flex-col items-center">
+            <Upload className="text-gray-400 mb-2" size={24} />
+            <span className="text-xs text-gray-500 font-medium">Click or drag</span>
+            {hint && <span className="text-[10px] text-gray-400 mt-1">{hint}</span>}
           </div>
         )}
       </div>
-      <input
-        ref={ref}
-        type="file"
-        accept="image/*"
-        style={{ display: "none" }}
-        onChange={handleFile}
-      />
+      <input ref={ref} type="file" accept="image/*" className="hidden" onChange={handleFile} />
     </div>
   );
 }
@@ -212,80 +120,58 @@ function ImageUpload({ label, name, value, onChange, hint, round = false }) {
 function FormField({ field, value, onChange, error, showPwd, togglePwd }) {
   if (field.type === "select") {
     return (
-      <div className="form-field">
-        <label className="form-label">
-          {field.label}
-          {field.required && <span className="form-label__req">*</span>}
+      <div className="mb-5">
+        <label className="block text-sm font-semibold text-gray-900 mb-2">
+          {field.label} {field.required && <span className="text-red-500">*</span>}
         </label>
-        <div
-          className={`form-select-wrap${error ? " form-select-wrap--error" : ""}`}
-        >
+        <div className="relative">
           <select
-            className="form-select"
+            className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm appearance-none focus:ring-2 focus:ring-black focus:border-transparent transition-all ${error ? 'border-red-300' : 'border-gray-200'}`}
             value={value || ""}
             onChange={(e) => onChange(field.name, e.target.value)}
           >
-            <option value="">{field.placeholder}</option>
+            <option value="" disabled>{field.placeholder}</option>
             {field.options.map((opt) => (
-              // opt is { label, value } for store categories
-              <option key={opt.label ?? opt} value={opt.label ?? opt}>
-                {opt.label ?? opt}
-              </option>
+              <option key={opt.label ?? opt} value={opt.label ?? opt}>{opt.label ?? opt}</option>
             ))}
           </select>
-          <svg
-            className="form-select-arrow"
-            width="14"
-            height="14"
-            viewBox="0 0 24 24"
-            fill="none"
-          >
-            <path
-              d="M6 9l6 6 6-6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
+          <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
+            <ChevronRight className="text-gray-400 rotate-90" size={16} />
+          </div>
         </div>
-        {error && <span className="form-error">{error}</span>}
+        {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
       </div>
     );
   }
 
   if (field.type === "textarea") {
     return (
-      <div className="form-field">
-        <label className="form-label">
-          {field.label}
-          {field.required && <span className="form-label__req">*</span>}
+      <div className="mb-5">
+        <label className="block text-sm font-semibold text-gray-900 mb-2">
+          {field.label} {field.required && <span className="text-red-500">*</span>}
         </label>
         <textarea
-          className={`form-textarea${error ? " form-textarea--error" : ""}`}
+          className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent transition-all resize-none ${error ? 'border-red-300' : 'border-gray-200'}`}
           placeholder={field.placeholder}
           value={value || ""}
           rows={3}
           onChange={(e) => onChange(field.name, e.target.value)}
         />
-        {error && <span className="form-error">{error}</span>}
+        {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
       </div>
     );
   }
 
   const isPassword = field.type === "password";
   return (
-    <div className="form-field">
-      <label className="form-label">
-        {field.label}
-        {field.required && <span className="form-label__req">*</span>}
-        {!field.required && <span className="form-label__opt">(optional)</span>}
+    <div className="mb-5">
+      <label className="block text-sm font-semibold text-gray-900 mb-2">
+        {field.label} {field.required && <span className="text-red-500">*</span>}
+        {!field.required && <span className="text-gray-400 font-normal ml-1">(optional)</span>}
       </label>
-      <div
-        className={`form-input-wrap${error ? " form-input-wrap--error" : ""}${isPassword ? " form-input-wrap--pwd" : ""}`}
-      >
-        {field.icon && <span className="form-input-icon">{field.icon}</span>}
+      <div className="relative">
         <input
-          className={`form-input${field.icon ? " form-input--has-icon" : ""}`}
+          className={`w-full px-4 py-3 bg-gray-50 border rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent transition-all pr-12 ${error ? 'border-red-300 text-red-900' : 'border-gray-200 focus:bg-white text-gray-900'}`}
           type={isPassword ? (showPwd ? "text" : "password") : field.type}
           placeholder={field.placeholder}
           value={value || ""}
@@ -293,242 +179,62 @@ function FormField({ field, value, onChange, error, showPwd, togglePwd }) {
           autoComplete={field.autoComplete}
         />
         {isPassword && (
-          <button
-            type="button"
-            className="form-input-eye"
-            onClick={togglePwd}
-            tabIndex={-1}
-          >
-            <EyeIcon open={showPwd} />
+          <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600" onClick={togglePwd} tabIndex={-1}>
+            {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>
         )}
       </div>
       {field.name === "password" && <PasswordStrength password={value} />}
-      {error && <span className="form-error">{error}</span>}
+      {error && <p className="mt-1 text-xs text-red-600">{error}</p>}
     </div>
   );
 }
 
 // ─── Step field definitions ───────────────────────────────────────────────────
 const STEP1_FIELDS = [
-  {
-    name: "fullName",
-    label: "Full Name",
-    type: "text",
-    placeholder: "Ajinkya Saivar",
-    required: true,
-    autoComplete: "name",
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="2" />
-      </svg>
-    ),
-  },
-  {
-    name: "email",
-    label: "Email Address",
-    type: "email",
-    placeholder: "you@example.com",
-    required: true,
-    autoComplete: "email",
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <polyline
-          points="22,6 12,13 2,6"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-      </svg>
-    ),
-  },
-  {
-    name: "password",
-    label: "Password",
-    type: "password",
-    placeholder: "Min. 6 characters",
-    required: true,
-    autoComplete: "new-password",
-  },
-  {
-    name: "confirmPassword",
-    label: "Confirm Password",
-    type: "password",
-    placeholder: "Repeat your password",
-    required: true,
-    autoComplete: "new-password",
-  },
+  { name: "fullName", label: "Full Name", type: "text", placeholder: "Ajinkya Saivar", required: true, autoComplete: "name" },
+  { name: "email", label: "Email Address", type: "email", placeholder: "you@example.com", required: true, autoComplete: "email" },
+  { name: "password", label: "Password", type: "password", placeholder: "Min. 6 characters", required: true, autoComplete: "new-password" },
+  { name: "confirmPassword", label: "Confirm Password", type: "password", placeholder: "Repeat your password", required: true, autoComplete: "new-password" },
 ];
-
 const STEP2_CUSTOMER_FIELDS = [
-  {
-    name: "phone",
-    label: "Phone Number",
-    type: "tel",
-    placeholder: "9876543210",
-    required: false,
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.59a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
+  { name: "phone", label: "Phone Number", type: "tel", placeholder: "9876543210", required: false },
 ];
-
 const STEP2_STORE_FIELDS = [
-  {
-    name: "storeName",
-    label: "Store Name",
-    type: "text",
-    placeholder: "e.g. Velvet Noir",
-    required: true,
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <polyline
-          points="9 22 9 12 15 12 15 22"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    name: "storeCategory",
-    label: "Store Category",
-    type: "select",
-    placeholder: "Choose a category",
-    required: true,
-    // options are { label, value } objects — FormField reads .label for display
-    options: STORE_CATEGORIES,
-  },
-  {
-    name: "storeDesc",
-    label: "Store Description",
-    type: "textarea",
-    placeholder: "Tell customers what your store is about…",
-    required: true,
-  },
-  {
-    name: "storePhone",
-    label: "Store Contact Number",
-    type: "tel",
-    placeholder: "9876543210",
-    required: false,
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <path
-          d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.18 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.59a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-    ),
-  },
-  {
-    name: "gst",
-    label: "GST Number",
-    type: "text",
-    placeholder: "22AAAAA0000A1Z5 (optional)",
-    required: false,
-    icon: (
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <rect
-          x="2"
-          y="7"
-          width="20"
-          height="14"
-          rx="2"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-        <path
-          d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"
-          stroke="currentColor"
-          strokeWidth="2"
-        />
-      </svg>
-    ),
-  },
+  { name: "storeName", label: "Store Name", type: "text", placeholder: "e.g. Velvet Noir", required: true },
+  { name: "storeCategory", label: "Store Category", type: "select", placeholder: "Choose a category", required: true, options: STORE_CATEGORIES },
+  { name: "storeDesc", label: "Store Description", type: "textarea", placeholder: "Tell customers what your store is about…", required: true },
+  { name: "storePhone", label: "Store Contact Number", type: "tel", placeholder: "9876543210", required: false },
+  { name: "gst", label: "GST Number", type: "text", placeholder: "22AAAAA0000A1Z5 (optional)", required: false },
 ];
-
 const STEP3_STORE_ADDRESS_FIELDS = [
-  {
-    name: "street",
-    label: "Street Address",
-    type: "text",
-    placeholder: "123, MG Road, Near Metro",
-    required: true,
-  },
-  {
-    name: "city",
-    label: "City",
-    type: "text",
-    placeholder: "Mumbai",
-    required: true,
-  },
-  {
-    name: "state",
-    label: "State",
-    type: "text",
-    placeholder: "Maharashtra",
-    required: true,
-  },
-  {
-    name: "pincode",
-    label: "Pincode",
-    type: "text",
-    placeholder: "400001",
-    required: true,
-  },
+  { name: "street", label: "Street Address", type: "text", placeholder: "123, MG Road, Near Metro", required: true },
+  { name: "city", label: "City", type: "text", placeholder: "Mumbai", required: true },
+  { name: "state", label: "State", type: "text", placeholder: "Maharashtra", required: true },
+  { name: "pincode", label: "Pincode", type: "text", placeholder: "400001", required: true },
 ];
 
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
 
   const [step, setStep] = useState(1);
-  const [role, setRole] = useState("customer"); // "customer" | "store_owner"
+  const [role, setRole] = useState("customer");
   const [data, setData] = useState({});
   const [errors, setErrors] = useState({});
   const [showPwd, setShowPwd] = useState(false);
   const [showCPwd, setShowCPwd] = useState(false);
+  
   const [profileImg, setProfileImg] = useState(null);
   const [storeLogo, setStoreLogo] = useState(null);
   const [storeBanner, setStoreBanner] = useState(null);
+  
   const [loading, setLoading] = useState(false);
   const [apiError, setApiError] = useState("");
 
   const isStoreOwner = role === "store_owner";
   const totalSteps = isStoreOwner ? 3 : 2;
   const steps = isStoreOwner ? STEPS_STORE_OWNER : STEPS_CUSTOMER;
-
-  // ── Success step index (1-based, after last real step) ──
   const successStep = totalSteps + 1;
   const isSuccess = step === successStep;
 
@@ -543,8 +249,9 @@ export default function Register() {
     if (name === "storeBanner") setStoreBanner(file);
   };
 
-  // Validate current step and advance
   const next = () => {
+    // Scroll top organically
+    window.scrollTo({ top: 0, behavior: "smooth" });
     let fields = [];
     if (step === 1) fields = STEP1_FIELDS;
     if (step === 2 && isStoreOwner) fields = STEP2_STORE_FIELDS;
@@ -566,48 +273,26 @@ export default function Register() {
     setStep((s) => s - 1);
   };
 
-  // ── Resolve category label → backend slug ──────────────────────────────────
   const resolveCategoryValue = (label) => {
     const match = STORE_CATEGORIES.find((c) => c.label === label);
     return match?.value ?? "other";
   };
 
-  // ── SUBMIT ─────────────────────────────────────────────────────────────────
-  //
-  // Customer flow:
-  //   POST /auth/register  (name, email, password, role, phone, profileImage)
-  //   → success step
-  //
-  // Store Owner flow:
-  //   1. POST /auth/register  (same fields above — token saved by AuthContext)
-  //   2. POST /stores         (name, description, category, phone, gst,
-  //                            street, city, state, pincode, logo, banner)
-  //      → token auto-attached by api.js interceptor
-  //   → success step
-  //
   const handleSubmit = async () => {
     setLoading(true);
     setApiError("");
 
     try {
-      // ── 1. Register the user ─────────────────────────────────────────────
       const userFd = new FormData();
       userFd.append("name", data.fullName.trim());
       userFd.append("email", data.email.trim());
       userFd.append("password", data.password);
       userFd.append("role", role);
-      // For customers use `phone`; store owners provide `storePhone`
-      userFd.append(
-        "phone",
-        (isStoreOwner ? data.storePhone : data.phone) || "",
-      );
+      userFd.append("phone", (isStoreOwner ? data.storePhone : data.phone) || "");
       if (profileImg) userFd.append("profileImage", profileImg);
 
       await register(userFd);
-      // AuthContext.register() stores cm_token + cm_user in localStorage
-      // api.js interceptor will now attach Bearer token to all subsequent calls
 
-      // ── 2. Create the store (store_owner only) ───────────────────────────
       if (isStoreOwner) {
         const storeFd = new FormData();
         storeFd.append("name", data.storeName.trim());
@@ -615,537 +300,220 @@ export default function Register() {
         storeFd.append("category", resolveCategoryValue(data.storeCategory));
         storeFd.append("phone", (data.storePhone || "").trim());
         storeFd.append("gst", (data.gst || "").trim());
-        // Address
         storeFd.append("street", data.street.trim());
         storeFd.append("city", data.city.trim());
         storeFd.append("state", data.state.trim());
         storeFd.append("pincode", data.pincode.trim());
-        // Images — backend expects field name `logo` (not `storeLogo`)
         if (storeLogo) storeFd.append("logo", storeLogo);
         if (storeBanner) storeFd.append("banner", storeBanner);
 
         await api.post("/stores", storeFd);
       }
 
-      // ── 3. Advance to success screen ─────────────────────────────────────
       setStep(successStep);
     } catch (err) {
-      setApiError(
-        err?.response?.data?.message ||
-          "Registration failed. Please try again.",
-      );
+      setApiError(err?.response?.data?.message || "Registration failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const progressPct = ((step - 1) / totalSteps) * 100;
-
   return (
-    <div className="register-page">
-      {/* ── Left panel — branding ───────────────────────────────────────────── */}
-      <div className="register-panel register-panel--left">
-        <div className="register-panel__inner">
-          <Link to="/" className="register-logo">
-            <span className="register-logo__mark">CM</span>
-            <span className="register-logo__name">ClothMart</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-8 sm:px-6 lg:px-8">
+      <div className="w-full max-w-lg bg-white rounded-[2rem] shadow-xl p-8 sm:p-10 border border-gray-100 relative overflow-hidden transition-all duration-300">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-black" />
+
+        <div className="text-center mb-8">
+          <Link to="/" className="inline-flex items-center gap-2 mb-4">
+            <span className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-heading font-black text-xl tracking-tighter">CM</span>
           </Link>
-
-          <div className="register-pitch">
-            <h2 className="register-pitch__title">
-              {isStoreOwner
-                ? "Launch your fashion brand."
-                : "Shop the best fashion brands."}
-            </h2>
-            <p className="register-pitch__sub">
-              {isStoreOwner
-                ? "Join thousands of clothing stores on ClothMart. Reach millions of fashion-forward customers across India."
-                : "Discover curated clothing from verified stores — ethnic wear, streetwear, activewear and more."}
-            </p>
-          </div>
-
-          <ul className="register-perks">
-            {(isStoreOwner
-              ? [
-                  "Free store setup in minutes",
-                  "Reach millions of buyers",
-                  "Powerful seller dashboard",
-                  "Secure & fast payouts",
-                ]
-              : [
-                  "Access to 500+ clothing brands",
-                  "Free delivery from verified stores",
-                  "Easy returns & exchanges",
-                  "Exclusive member-only deals",
-                ]
-            ).map((perk, i) => (
-              <li
-                key={i}
-                className="register-perks__item"
-                style={{ animationDelay: `${i * 0.1}s` }}
-              >
-                <span className="register-perks__icon">
-                  <CheckIcon />
-                </span>
-                {perk}
-              </li>
-            ))}
-          </ul>
-
-          <div className="register-panel__deco1" aria-hidden />
-          <div className="register-panel__deco2" aria-hidden />
-        </div>
-      </div>
-
-      {/* ── Right panel — form ──────────────────────────────────────────────── */}
-      <div className="register-panel register-panel--right">
-        <div className="register-form-wrap">
-          {/* Top: logo mobile + sign in link */}
-          <div className="register-top">
-            <Link to="/" className="register-logo register-logo--mobile">
-              <span className="register-logo__mark">CM</span>
-              <span className="register-logo__name">ClothMart</span>
-            </Link>
-            <p className="register-signin">
-              Already have an account?{" "}
-              <Link to="/login" className="register-signin__link">
-                Sign in
-              </Link>
-            </p>
-          </div>
-
-          {/* Progress bar — hide on success */}
           {!isSuccess && (
-            <div className="register-progress">
-              <div className="register-progress__bar">
-                <div
-                  className="register-progress__fill"
-                  style={{ width: `${progressPct}%` }}
-                />
-              </div>
-              <div className="register-progress__steps">
-                {steps.slice(0, -1).map((label, i) => {
-                  const idx = i + 1;
-                  const done = step > idx;
-                  const curr = step === idx;
-                  return (
-                    <div
-                      key={label}
-                      className={`register-step${done ? " register-step--done" : ""}${curr ? " register-step--active" : ""}`}
-                    >
-                      <div className="register-step__circle">
-                        {done ? <CheckIcon /> : <span>{idx}</span>}
-                      </div>
-                      <span className="register-step__label">{label}</span>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
+            <p className="text-sm text-gray-500">
+              Already have an account? <Link to="/login" className="text-black font-semibold hover:underline">Sign in</Link>
+            </p>
           )}
+        </div>
 
-          {/* ── STEP 1: Account ─────────────────────────────────────────────── */}
-          {step === 1 && (
-            <div className="register-form-step" key="step1">
-              <div className="register-form-hd">
-                <h1 className="register-form-hd__title">Create your account</h1>
-                <p className="register-form-hd__sub">
-                  Join ClothMart — it's free and takes under 2 minutes.
-                </p>
-              </div>
+        {!isSuccess && (
+          <div className="mb-8">
+            <div className="flex justify-between items-center mb-2">
+              {steps.slice(0, -1).map((lbl, i) => (
+                <div key={lbl} className="flex flex-col items-center flex-1">
+                  <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold mb-2 transition-colors ${step > i + 1 ? 'bg-black text-white' : step === i + 1 ? 'bg-black text-white ring-4 ring-gray-100' : 'bg-gray-100 text-gray-400'}`}>
+                    {step > i + 1 ? <Check size={14} /> : i + 1}
+                  </div>
+                  <span className={`text-[10px] uppercase tracking-wider font-bold ${step >= i + 1 ? 'text-gray-900' : 'text-gray-400'}`}>{lbl}</span>
+                </div>
+              ))}
+            </div>
+            <div className="relative h-1 bg-gray-100 rounded-full mt-4 mx-8 overflow-hidden">
+               <div className="absolute top-0 left-0 h-full bg-black transition-all duration-300" style={{ width: `${((step - 1) / totalSteps) * 100}%` }} />
+            </div>
+          </div>
+        )}
 
-              {/* Role toggle */}
-              <div className="role-toggle">
-                <button
-                  type="button"
-                  className={`role-toggle__btn${role === "customer" ? " role-toggle__btn--active" : ""}`}
-                  onClick={() => {
-                    setRole("customer");
-                    setErrors({});
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <circle
-                      cx="12"
-                      cy="7"
-                      r="4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                  </svg>
-                  I'm a Customer
-                </button>
-                <button
-                  type="button"
-                  className={`role-toggle__btn${role === "store_owner" ? " role-toggle__btn--active" : ""}`}
-                  onClick={() => {
-                    setRole("store_owner");
-                    setErrors({});
-                  }}
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                    <polyline
-                      points="9 22 9 12 15 12 15 22"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  I'm a Store Owner
-                </button>
-              </div>
+        {/* STEP 1 */}
+        {step === 1 && (
+          <div className="animate-fade-in">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold font-heading text-gray-900">Create account</h2>
+              <p className="text-sm text-gray-500 mt-1">Join ClothMart — it's free and takes under 2 minutes.</p>
+            </div>
 
-              <div className="form-grid">
-                {STEP1_FIELDS.map((f) => (
-                  <FormField
-                    key={f.name}
-                    field={f}
-                    value={data[f.name]}
-                    onChange={set}
-                    error={errors[f.name]}
-                    showPwd={
-                      f.name === "password"
-                        ? showPwd
-                        : f.name === "confirmPassword"
-                          ? showCPwd
-                          : false
-                    }
-                    togglePwd={
-                      f.name === "password"
-                        ? () => setShowPwd((v) => !v)
-                        : () => setShowCPwd((v) => !v)
-                    }
-                  />
-                ))}
-              </div>
-
-              <button className="register-btn" type="button" onClick={next}>
-                Continue
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M5 12h14M12 5l7 7-7 7"
-                    stroke="currentColor"
-                    strokeWidth="2"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
+            <div className="flex gap-4 mb-8">
+              <button 
+                onClick={() => { setRole("customer"); setErrors({}); }} 
+                className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 text-sm font-bold transition-all ${role === "customer" ? 'border-black bg-gray-50 text-black shadow-sm ring-1 ring-black' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}
+              >
+                <User size={18} /> Customer
+              </button>
+              <button 
+                onClick={() => { setRole("store_owner"); setErrors({}); }} 
+                className={`flex-1 py-3 px-4 rounded-xl border flex items-center justify-center gap-2 text-sm font-bold transition-all ${role === "store_owner" ? 'border-black bg-gray-50 text-black shadow-sm ring-1 ring-black' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}
+              >
+                <Store size={18} /> Store Owner
               </button>
             </div>
-          )}
 
-          {/* ── STEP 2 (Customer): Profile ──────────────────────────────────── */}
-          {step === 2 && !isStoreOwner && (
-            <div className="register-form-step" key="step2-customer">
-              <div className="register-form-hd">
-                <h1 className="register-form-hd__title">Your profile</h1>
-                <p className="register-form-hd__sub">
-                  Add a phone number and profile photo to complete your account.
-                </p>
-              </div>
-
-              <ImageUpload
-                label="Profile Photo"
-                name="profileImg"
-                value={profileImg}
-                onChange={setImg}
-                hint="JPG, PNG — max 5MB"
-                round
-              />
-
-              <div className="form-grid">
-                {STEP2_CUSTOMER_FIELDS.map((f) => (
-                  <FormField
-                    key={f.name}
-                    field={f}
-                    value={data[f.name]}
-                    onChange={set}
-                    error={errors[f.name]}
-                  />
-                ))}
-              </div>
-
-              {apiError && <ApiError message={apiError} />}
-
-              <div className="register-btn-row">
-                <button
-                  className="register-btn register-btn--outline"
-                  type="button"
-                  onClick={back}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M19 12H5M12 19l-7-7 7-7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Back
-                </button>
-                <button
-                  className={`register-btn${loading ? " register-btn--loading" : ""}`}
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="register-spinner" />
-                      Creating account…
-                    </>
-                  ) : (
-                    <>
-                      Create Account
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M5 12h14M12 5l7 7-7 7"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </div>
+            <div className="space-y-4">
+              {STEP1_FIELDS.map(f => (
+                <FormField key={f.name} field={f} value={data[f.name]} onChange={set} error={errors[f.name]} showPwd={f.name === "password" ? showPwd : showCPwd} togglePwd={f.name === "password" ? () => setShowPwd(!showPwd) : () => setShowCPwd(!showCPwd)} />
+              ))}
             </div>
-          )}
 
-          {/* ── STEP 2 (Store Owner): Store Info ────────────────────────────── */}
-          {step === 2 && isStoreOwner && (
-            <div className="register-form-step" key="step2-store">
-              <div className="register-form-hd">
-                <h1 className="register-form-hd__title">
-                  Tell us about your store
-                </h1>
-                <p className="register-form-hd__sub">
-                  This info will appear on your public store profile.
-                </p>
-              </div>
+            <button onClick={next} className="w-full flex items-center justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold tracking-wide uppercase text-white bg-black hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 transition-all mt-8">
+              Continue <ChevronRight size={18} className="ml-2" />
+            </button>
+          </div>
+        )}
 
-              <div className="form-grid">
-                {STEP2_STORE_FIELDS.map((f) => (
-                  <FormField
-                    key={f.name}
-                    field={f}
-                    value={data[f.name]}
-                    onChange={set}
-                    error={errors[f.name]}
-                  />
-                ))}
-              </div>
-
-              <div className="register-btn-row">
-                <button
-                  className="register-btn register-btn--outline"
-                  type="button"
-                  onClick={back}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M19 12H5M12 19l-7-7 7-7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Back
-                </button>
-                <button className="register-btn" type="button" onClick={next}>
-                  Next Step
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M5 12h14M12 5l7 7-7 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </button>
-              </div>
+        {/* STEP 2 - Customer */}
+        {step === 2 && !isStoreOwner && (
+          <div className="animate-fade-in">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold font-heading text-gray-900">Your profile</h2>
+              <p className="text-sm text-gray-500 mt-1">Add a photo and number to complete your setup.</p>
             </div>
-          )}
 
-          {/* ── STEP 3 (Store Owner): Media & Address ───────────────────────── */}
-          {step === 3 && isStoreOwner && (
-            <div className="register-form-step" key="step3-store">
-              <div className="register-form-hd">
-                <h1 className="register-form-hd__title">
-                  Media & store address
-                </h1>
-                <p className="register-form-hd__sub">
-                  Upload your branding and tell customers where you're based.
-                </p>
-              </div>
+            <ImageUpload label="Profile Photo" name="profileImg" value={profileImg} onChange={setImg} round />
 
-              <div className="form-grid form-grid--two">
-                <ImageUpload
-                  label="Store Logo"
-                  name="storeLogo"
-                  value={storeLogo}
-                  onChange={setImg}
-                  hint="Square, min 200×200px"
-                  round
-                />
-                <ImageUpload
-                  label="Store Banner (optional)"
-                  name="storeBanner"
-                  value={storeBanner}
-                  onChange={setImg}
-                  hint="1200×400px recommended"
-                />
-              </div>
-
-              <div className="form-section-label">Store Address</div>
-              <div className="form-grid form-grid--two">
-                {STEP3_STORE_ADDRESS_FIELDS.map((f) => (
-                  <FormField
-                    key={f.name}
-                    field={f}
-                    value={data[f.name]}
-                    onChange={set}
-                    error={errors[f.name]}
-                  />
-                ))}
-              </div>
-
-              {apiError && <ApiError message={apiError} />}
-
-              <div className="register-btn-row">
-                <button
-                  className="register-btn register-btn--outline"
-                  type="button"
-                  onClick={back}
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M19 12H5M12 19l-7-7 7-7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                  Back
-                </button>
-                <button
-                  className={`register-btn${loading ? " register-btn--loading" : ""}`}
-                  type="button"
-                  onClick={handleSubmit}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <>
-                      <span className="register-spinner" />
-                      Creating store…
-                    </>
-                  ) : (
-                    <>
-                      Launch My Store
-                      <svg
-                        width="16"
-                        height="16"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M5 12h14M12 5l7 7-7 7"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </>
-                  )}
-                </button>
-              </div>
+            <div className="space-y-4">
+              {STEP2_CUSTOMER_FIELDS.map(f => <FormField key={f.name} field={f} value={data[f.name]} onChange={set} error={errors[f.name]} />)}
             </div>
-          )}
 
-          {/* ── SUCCESS ─────────────────────────────────────────────────────── */}
-          {isSuccess && (
-            <div className="register-success">
-              <div className="register-success__icon">🎉</div>
-              <h2 className="register-success__title">You're all set!</h2>
-              <p className="register-success__sub">
-                Welcome to ClothMart
-                {data.fullName ? `, ${data.fullName.split(" ")[0]}` : ""}!
-                {isStoreOwner
-                  ? " Your store has been created and is under review."
-                  : " Start shopping now."}
-              </p>
-              <Link
-                to={isStoreOwner ? "/dashboard" : "/"}
-                className="register-btn"
-                style={{ textDecoration: "none", display: "inline-flex" }}
+            {apiError && (
+              <div className="mt-4 p-4 bg-red-50 text-red-600 text-sm rounded-xl flex items-start gap-3 border border-red-100">
+                <AlertCircle size={18} className="mt-0.5 flex-shrink-0" /> <p>{apiError}</p>
+              </div>
+            )}
+
+            <div className="flex gap-4 mt-8">
+              <button onClick={back} className="w-14 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 transition-colors">
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                onClick={handleSubmit} 
+                disabled={loading} 
+                className={`flex-1 flex items-center justify-center py-4 border border-transparent rounded-xl shadow-sm text-sm font-bold tracking-wide uppercase text-white bg-black hover:bg-gray-800 transition-all ${loading ? 'opacity-70 cursor-wait' : ''}`}
               >
-                {isStoreOwner ? "Go to Dashboard" : "Start Shopping"}
-              </Link>
+                {loading ? <LoaderCircle className="animate-spin" size={20} /> : "Create Account"}
+              </button>
             </div>
-          )}
+          </div>
+        )}
 
-          <p className="register-terms">
-            By registering you agree to our{" "}
-            <Link to="/terms">Terms of Service</Link> and{" "}
-            <Link to="/privacy">Privacy Policy</Link>.
-          </p>
-        </div>
+        {/* STEP 2 - Store Owner */}
+        {step === 2 && isStoreOwner && (
+          <div className="animate-fade-in">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold font-heading text-gray-900">Store info</h2>
+              <p className="text-sm text-gray-500 mt-1">Tell us what you sell.</p>
+            </div>
+
+            <div className="space-y-2">
+              {STEP2_STORE_FIELDS.map(f => <FormField key={f.name} field={f} value={data[f.name]} onChange={set} error={errors[f.name]} />)}
+            </div>
+
+            <div className="flex gap-4 mt-8">
+              <button onClick={back} className="w-14 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 transition-colors">
+                <ChevronLeft size={20} />
+              </button>
+              <button onClick={next} className="flex-1 flex items-center justify-center py-4 border border-transparent rounded-xl shadow-sm text-sm font-bold tracking-wide uppercase text-white bg-black hover:bg-gray-800 transition-all">
+                Continue <ChevronRight size={18} className="ml-2" />
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3 - Store Owner Media & Address */}
+        {step === 3 && isStoreOwner && (
+          <div className="animate-fade-in">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold font-heading text-gray-900">Media & Address</h2>
+              <p className="text-sm text-gray-500 mt-1">Upload branding and your location.</p>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <ImageUpload label="Store Logo" name="storeLogo" value={storeLogo} onChange={setImg} round />
+              <ImageUpload label="Cover Banner" name="storeBanner" value={storeBanner} onChange={setImg} />
+            </div>
+
+            <h3 className="text-sm font-bold text-gray-900 mb-4 mt-2">Store Address</h3>
+            <div className="space-y-4">
+              {STEP3_STORE_ADDRESS_FIELDS.map(f => <FormField key={f.name} field={f} value={data[f.name]} onChange={set} error={errors[f.name]} />)}
+            </div>
+
+            {apiError && (
+              <div className="mt-4 p-4 bg-red-50 text-red-600 text-sm rounded-xl flex items-start gap-3 border border-red-100">
+                <AlertCircle size={18} className="mt-0.5 flex-shrink-0" /> <p>{apiError}</p>
+              </div>
+            )}
+
+            <div className="flex gap-4 mt-8">
+              <button onClick={back} className="w-14 flex items-center justify-center border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 transition-colors">
+                <ChevronLeft size={20} />
+              </button>
+              <button 
+                onClick={handleSubmit} 
+                disabled={loading} 
+                className={`flex-1 flex items-center justify-center py-4 border border-transparent rounded-xl shadow-sm text-sm font-bold tracking-wide uppercase text-white bg-black hover:bg-gray-800 transition-all ${loading ? 'opacity-70 cursor-wait' : ''}`}
+              >
+                {loading ? <LoaderCircle className="animate-spin" size={20} /> : "Launch Store"}
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* SUCCESS */}
+        {isSuccess && (
+          <div className="animate-slide-up text-center py-8">
+            <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle2 className="text-green-500" size={40} />
+            </div>
+            <h2 className="text-3xl font-bold font-heading text-gray-900 mb-2">You're all set!</h2>
+            <p className="text-gray-500 mb-8 max-w-sm mx-auto">
+              Welcome to ClothMart{data.fullName ? `, ${data.fullName.split(" ")[0]}` : ""}! 
+              {isStoreOwner ? " Your store setup is complete." : " Start shopping now."}
+            </p>
+            <Link to={isStoreOwner ? "/dashboard" : "/"} className="inline-flex items-center justify-center py-4 px-10 border border-transparent rounded-xl shadow-md text-sm font-bold tracking-wider uppercase text-white bg-black hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+               {isStoreOwner ? "Go to Dashboard" : "Start Shopping"} <ChevronRight size={18} className="ml-2" />
+            </Link>
+          </div>
+        )}
+
+        {!isSuccess && (
+          <div className="mt-8 text-center">
+            <p className="text-xs text-gray-400 font-medium">By registering, you agree to our Terms & Privacy Policy.</p>
+          </div>
+        )}
       </div>
-    </div>
-  );
-}
 
-// ─── Inline API error banner ──────────────────────────────────────────────────
-function ApiError({ message }) {
-  return (
-    <div className="register-api-error">
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" />
-        <line
-          x1="12"
-          y1="8"
-          x2="12"
-          y2="12"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-        <line
-          x1="12"
-          y1="16"
-          x2="12.01"
-          y2="16"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-        />
-      </svg>
-      {message}
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+        @keyframes slide-up { from { opacity: 0; transform: translateY(20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        .animate-slide-up { animation: slide-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+      `}} />
     </div>
   );
 }

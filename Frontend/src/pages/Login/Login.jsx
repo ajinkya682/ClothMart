@@ -1,54 +1,13 @@
 import { useState } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import "./Login.scss";
+import { Eye, EyeOff, LoaderCircle, Store, User, ArrowRight, AlertCircle, CheckCircle2 } from "lucide-react";
 
-// ─── Icons ────────────────────────────────────────────────────────────────────
-const EyeIcon = ({ open }) =>
-  open ? (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
-    </svg>
-  ) : (
-    <svg width="17" height="17" viewBox="0 0 24 24" fill="none">
-      <path
-        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <path
-        d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-      <line
-        x1="1"
-        y1="1"
-        x2="23"
-        y2="23"
-        stroke="currentColor"
-        strokeWidth="2"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-
-// ─── Main Component ───────────────────────────────────────────────────────────
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
-  // If user was redirected here from a protected route, send them back there
-  // after login — but only if their role matches. Otherwise use role default.
   const from = location.state?.from?.pathname;
 
   const [email, setEmail] = useState("");
@@ -59,7 +18,6 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // ── Validation ──────────────────────────────────────────────────────────────
   const validate = () => {
     const errs = {};
     if (!email.trim()) errs.email = "Email is required";
@@ -71,14 +29,11 @@ export default function Login() {
     return errs;
   };
 
-  // ── Role-based redirect ─────────────────────────────────────────────────────
-  // Priority: previous protected page (from) → role default
   const getRedirectPath = (role) => {
     if (from && from !== "/login" && from !== "/register") return from;
     return role === "store_owner" ? "/dashboard" : "/";
   };
 
-  // ── Submit ──────────────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
     setApiError("");
@@ -90,19 +45,15 @@ export default function Login() {
     setErrors({});
     setLoading(true);
     try {
-      // login() returns res.data which includes the user object with role
       const data = await login({ email: email.trim(), password });
       setSuccess(true);
-      setTimeout(
-        () => navigate(getRedirectPath(data.user.role), { replace: true }),
-        900,
-      );
+      setTimeout(() => navigate(getRedirectPath(data.user.role), { replace: true }), 900);
     } catch (err) {
       setApiError(
         err?.response?.data?.message ||
           (err?.response?.status === 401
             ? "Incorrect email or password. Please try again."
-            : "Something went wrong. Please try again."),
+            : "Something went wrong. Please try again.")
       );
     } finally {
       setLoading(false);
@@ -112,435 +63,119 @@ export default function Login() {
   const clearError = (field) => setErrors((e) => ({ ...e, [field]: "" }));
 
   return (
-    <div className="login-page">
-      {/* ── Left panel: branding ─────────────────────────────────────────── */}
-      <div className="login-left">
-        <div className="login-left__inner">
-          <Link to="/" className="login-logo">
-            <span className="login-logo__mark">CM</span>
-            <span className="login-logo__name">ClothMart</span>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md bg-white rounded-[2rem] shadow-xl p-8 sm:p-10 border border-gray-100 relative overflow-hidden">
+        
+        {/* Top Decor */}
+        <div className="absolute top-0 left-0 right-0 h-1 bg-black" />
+
+        <div className="text-center mb-10">
+          <Link to="/" className="inline-flex items-center gap-2 mb-6">
+            <span className="w-10 h-10 bg-black text-white rounded-xl flex items-center justify-center font-heading font-black text-xl tracking-tighter">CM</span>
           </Link>
-
-          {/* Big editorial quote */}
-          <div className="login-left__copy">
-            <h2 className="login-left__headline">
-              Your wardrobe,
-              <br />
-              <span className="login-left__accent">reimagined.</span>
-            </h2>
-            <p className="login-left__sub">
-              Sign in to access curated fashion from 500+ verified clothing
-              brands across India.
-            </p>
-          </div>
-
-          {/* Feature cards */}
-          <div className="login-features">
-            {[
-              {
-                icon: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ),
-                title: "Saved Wishlist",
-                desc: "All your favourite styles in one place",
-              },
-              {
-                icon: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <circle cx="9" cy="21" r="1" fill="currentColor" />
-                    <circle cx="20" cy="21" r="1" fill="currentColor" />
-                    <path
-                      d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ),
-                title: "Order Tracking",
-                desc: "Track every delivery in real time",
-              },
-              {
-                icon: (
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <polygon
-                      points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                ),
-                title: "Exclusive Deals",
-                desc: "Member-only discounts from top brands",
-              },
-            ].map((feat, i) => (
-              <div
-                key={i}
-                className="login-feat"
-                style={{ animationDelay: `${0.1 + i * 0.1}s` }}
-              >
-                <span className="login-feat__icon">{feat.icon}</span>
-                <div>
-                  <div className="login-feat__title">{feat.title}</div>
-                  <div className="login-feat__desc">{feat.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {/* Decorative elements */}
-          <div className="login-left__blob1" aria-hidden />
-          <div className="login-left__blob2" aria-hidden />
-          <div className="login-left__grid" aria-hidden />
-        </div>
-      </div>
-
-      {/* ── Right panel: form ────────────────────────────────────────────── */}
-      <div className="login-right">
-        <div className="login-form-wrap">
-          {/* Mobile logo */}
-          <Link to="/" className="login-logo login-logo--mobile">
-            <span className="login-logo__mark">CM</span>
-            <span className="login-logo__name">ClothMart</span>
-          </Link>
-
-          {/* Header */}
-          <div className="login-hd">
-            <h1 className="login-hd__title">Welcome back</h1>
-            <p className="login-hd__sub">
-              Don't have an account?{" "}
-              <Link to="/register" className="login-hd__link">
-                Create one free
-              </Link>
-            </p>
-          </div>
-
-          {/* Success overlay */}
-          {success && (
-            <div className="login-success">
-              <div className="login-success__circle">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-                  <path
-                    d="M20 6L9 17l-5-5"
-                    stroke="currentColor"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </div>
-              <span>Signing you in…</span>
-            </div>
-          )}
-
-          {/* Form */}
-          {!success && (
-            <form className="login-form" onSubmit={handleSubmit} noValidate>
-              {/* API error banner */}
-              {apiError && (
-                <div className="login-api-error" role="alert">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                    <circle
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                    />
-                    <line
-                      x1="12"
-                      y1="8"
-                      x2="12"
-                      y2="12"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <line
-                      x1="12"
-                      y1="16"
-                      x2="12.01"
-                      y2="16"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                  </svg>
-                  {apiError}
-                </div>
-              )}
-
-              {/* Email field */}
-              <div className="login-field">
-                <label className="login-label" htmlFor="email">
-                  Email Address
-                </label>
-                <div
-                  className={`login-input-wrap${errors.email ? " login-input-wrap--error" : ""}${email && !errors.email ? " login-input-wrap--ok" : ""}`}
-                >
-                  <span className="login-input-icon">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <polyline
-                        points="22,6 12,13 2,6"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  </span>
-                  <input
-                    id="email"
-                    type="email"
-                    className="login-input"
-                    placeholder="you@example.com"
-                    value={email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      clearError("email");
-                      setApiError("");
-                    }}
-                    autoComplete="email"
-                    autoFocus
-                  />
-                  {email && !errors.email && (
-                    <span className="login-input-check">
-                      <svg
-                        width="13"
-                        height="13"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                      >
-                        <path
-                          d="M20 6L9 17l-5-5"
-                          stroke="currentColor"
-                          strokeWidth="2.5"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    </span>
-                  )}
-                </div>
-                {errors.email && (
-                  <span className="login-error">{errors.email}</span>
-                )}
-              </div>
-
-              {/* Password field */}
-              <div className="login-field">
-                <div className="login-label-row">
-                  <label className="login-label" htmlFor="password">
-                    Password
-                  </label>
-                  <Link to="/forgot-password" className="login-forgot">
-                    Forgot password?
-                  </Link>
-                </div>
-                <div
-                  className={`login-input-wrap login-input-wrap--pwd${errors.password ? " login-input-wrap--error" : ""}`}
-                >
-                  <span className="login-input-icon">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                      <rect
-                        x="3"
-                        y="11"
-                        width="18"
-                        height="11"
-                        rx="2"
-                        ry="2"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="M7 11V7a5 5 0 0 1 10 0v4"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                    </svg>
-                  </span>
-                  <input
-                    id="password"
-                    type={showPwd ? "text" : "password"}
-                    className="login-input"
-                    placeholder="Your password"
-                    value={password}
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                      clearError("password");
-                      setApiError("");
-                    }}
-                    autoComplete="current-password"
-                  />
-                  <button
-                    type="button"
-                    className="login-eye"
-                    onClick={() => setShowPwd((v) => !v)}
-                    tabIndex={-1}
-                    aria-label={showPwd ? "Hide password" : "Show password"}
-                  >
-                    <EyeIcon open={showPwd} />
-                  </button>
-                </div>
-                {errors.password && (
-                  <span className="login-error">{errors.password}</span>
-                )}
-              </div>
-
-              {/* Remember me */}
-              <div className="login-remember">
-                <label className="login-check-label">
-                  <input type="checkbox" className="login-checkbox" />
-                  <span className="login-check-box" />
-                  Keep me signed in
-                </label>
-              </div>
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className={`login-btn${loading ? " login-btn--loading" : ""}`}
-                disabled={loading}
-              >
-                {loading ? (
-                  <>
-                    <span className="login-spinner" />
-                    Signing in…
-                  </>
-                ) : (
-                  <>
-                    Sign In
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M5 12h14M12 5l7 7-7 7"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </>
-                )}
-              </button>
-
-              {/* Divider */}
-              <div className="login-divider">
-                <span>or continue as</span>
-              </div>
-
-              {/* Role quick-links */}
-              <div className="login-roles">
-                <Link to="/register?role=customer" className="login-role-card">
-                  <span className="login-role-card__icon">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                      />
-                      <circle
-                        cx="12"
-                        cy="7"
-                        r="4"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                      />
-                    </svg>
-                  </span>
-                  <div>
-                    <div className="login-role-card__title">New Customer</div>
-                    <div className="login-role-card__sub">
-                      Shop from top brands
-                    </div>
-                  </div>
-                  <svg
-                    className="login-role-card__arrow"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M5 12h14M12 5l7 7-7 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </Link>
-
-                <Link
-                  to="/register?role=store_owner"
-                  className="login-role-card"
-                >
-                  <span className="login-role-card__icon login-role-card__icon--store">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                      <polyline
-                        points="9 22 9 12 15 12 15 22"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
-                  </span>
-                  <div>
-                    <div className="login-role-card__title">Open a Store</div>
-                    <div className="login-role-card__sub">
-                      Sell your clothing brand
-                    </div>
-                  </div>
-                  <svg
-                    className="login-role-card__arrow"
-                    width="14"
-                    height="14"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                  >
-                    <path
-                      d="M5 12h14M12 5l7 7-7 7"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </Link>
-              </div>
-            </form>
-          )}
-
-          <p className="login-terms">
-            By signing in you agree to our{" "}
-            <Link to="/terms">Terms of Service</Link> and{" "}
-            <Link to="/privacy">Privacy Policy</Link>.
+          <h1 className="text-2xl font-bold font-heading text-gray-900 tracking-tight">Welcome back</h1>
+          <p className="text-sm text-gray-500 mt-2">
+            Don't have an account? <Link to="/register" className="text-black font-semibold hover:underline">Create one free</Link>
           </p>
         </div>
+
+        {success ? (
+          <div className="flex flex-col items-center justify-center py-12 text-center animate-fade-in">
+            <div className="w-16 h-16 bg-green-50 rounded-full flex items-center justify-center mb-4">
+              <CheckCircle2 className="text-green-500" size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Login Successful</h3>
+            <p className="text-sm text-gray-500">Redirecting to your dashboard...</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} noValidate className="space-y-6">
+            
+            {apiError && (
+              <div className="p-4 bg-red-50 text-red-600 text-sm rounded-xl flex items-start gap-3 border border-red-100 animate-slide-up">
+                <AlertCircle size={18} className="mt-0.5 flex-shrink-0" />
+                <p>{apiError}</p>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2" htmlFor="email">Email Address</label>
+              <input
+                id="email"
+                type="email"
+                className={`w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm focus:ring-2 focus:ring-black focus:border-transparent transition-all ${errors.email ? 'border-red-300 text-red-900 placeholder-red-300' : 'border-gray-200 text-gray-900 focus:bg-white'}`}
+                placeholder="you@example.com"
+                value={email}
+                onChange={(e) => { setEmail(e.target.value); clearError("email"); setApiError(""); }}
+                autoComplete="email"
+                autoFocus
+              />
+              {errors.email && <p className="mt-2 text-xs text-red-600">{errors.email}</p>}
+            </div>
+
+            <div>
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-sm font-semibold text-gray-900" htmlFor="password">Password</label>
+                <Link to="/forgot-password" className="text-xs font-semibold text-gray-500 hover:text-black transition-colors">Forgot password?</Link>
+              </div>
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPwd ? "text" : "password"}
+                  className={`w-full px-4 py-3.5 bg-gray-50 border rounded-xl text-sm pr-12 focus:ring-2 focus:ring-black focus:border-transparent transition-all ${errors.password ? 'border-red-300 text-red-900 placeholder-red-300' : 'border-gray-200 text-gray-900 focus:bg-white'}`}
+                  placeholder="Min. 6 characters"
+                  value={password}
+                  onChange={(e) => { setPassword(e.target.value); clearError("password"); setApiError(""); }}
+                  autoComplete="current-password"
+                />
+                <button
+                  type="button"
+                  tabIndex={-1}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  onClick={() => setShowPwd(!showPwd)}
+                >
+                  {showPwd ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+              {errors.password && <p className="mt-2 text-xs text-red-600">{errors.password}</p>}
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className={`w-full flex items-center justify-center py-4 px-4 border border-transparent rounded-xl shadow-sm text-sm font-bold tracking-wide uppercase text-white bg-black hover:bg-gray-800 hover:shadow-lg hover:-translate-y-0.5 transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black ${loading ? 'opacity-70 cursor-wait' : ''}`}
+            >
+              {loading ? <LoaderCircle className="animate-spin" size={20} /> : "Sign In"}
+            </button>
+
+            <div className="mt-8 pt-6 border-t border-gray-100">
+              <p className="text-center text-xs text-gray-500 font-medium uppercase tracking-wider mb-6">Or continue as</p>
+              <div className="grid grid-cols-2 gap-3">
+                <Link to="/register?role=customer" className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white hover:border-black transition-colors group">
+                   <User size={20} className="text-gray-400 group-hover:text-black mb-2 transition-colors" />
+                   <span className="text-xs font-semibold text-gray-700 group-hover:text-black">Customer</span>
+                </Link>
+                <Link to="/register?role=store_owner" className="flex flex-col items-center justify-center p-4 rounded-xl border border-gray-200 bg-gray-50 hover:bg-white hover:border-black transition-colors group">
+                   <Store size={20} className="text-gray-400 group-hover:text-black mb-2 transition-colors" />
+                   <span className="text-xs font-semibold text-gray-700 group-hover:text-black">Store Owner</span>
+                </Link>
+              </div>
+            </div>
+
+          </form>
+        )}
       </div>
+
+      {/* Decorative text bottom */}
+      <div className="absolute bottom-8 left-0 right-0 text-center pointer-events-none">
+        <p className="text-xs text-gray-400 font-medium">By signing in, you agree to our Terms & Privacy Policy.</p>
+      </div>
+
+      <style dangerouslySetInnerHTML={{__html: `
+        @keyframes slide-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-slide-up { animation: slide-up 0.3s ease-out forwards; }
+        @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fade-in { animation: fade-in 0.3s ease-out forwards; }
+      `}} />
     </div>
   );
 }

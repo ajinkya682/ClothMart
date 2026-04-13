@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, useNavigate, useLocation } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { Menu, X, ShoppingBag, User, LogOut, Package, Store, Heart } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { useCart } from "../../context/CartContext";
-import "./Navbar.scss";
 
 const NAV_LINKS = [
   { to: "/", label: "Home" },
   { to: "/stores", label: "Stores" },
-  { to: "/products", label: "Products" },
+  { to: "/products", label: "Shop" },
 ];
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const dropdownRef = useRef(null);
@@ -21,20 +22,17 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // close menus on route change
   useEffect(() => {
-    setMobileOpen(false);
+    setMobileMenuOpen(false);
     setDropdownOpen(false);
   }, [location]);
 
-  // scroll listener
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 40);
+    const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // close dropdown on outside click
   useEffect(() => {
     const handler = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -45,217 +43,249 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+  }, [mobileMenuOpen]);
+
   const handleLogout = () => {
     logout();
     navigate("/");
     setDropdownOpen(false);
   };
 
-  const isLightPage = location.pathname !== "/";
   const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
+    ? user.name.split(" ").map((n) => n[0]).join("").slice(0, 2).toUpperCase()
     : "?";
 
   return (
     <>
-      <nav
-        className={`navbar ${scrolled ? "navbar--scrolled" : ""} ${isLightPage ? "navbar--light" : ""}`}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled || mobileMenuOpen ? "bg-white/90 backdrop-blur-md shadow-sm" : "bg-transparent"
+        }`}
       >
-        <div className="navbar__inner">
-          {/* Logo */}
-          <Link to="/" className="navbar__logo">
-            <div className="navbar__logo-mark">C</div>
-            <span className="navbar__logo-text">ClothMart</span>
-          </Link>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between items-center h-[72px]">
+            {/* Left: Logo */}
+            <Link to="/" className="flex items-center gap-2 z-50">
+              <div className="w-8 h-8 bg-black text-white rounded-md flex items-center justify-center font-heading font-bold text-lg tracking-tighter">
+                CM
+              </div>
+              <span className="font-heading font-semibold text-xl tracking-tight hidden sm:block">
+                ClothMart
+              </span>
+            </Link>
 
-          {/* Desktop links */}
-          <div className="navbar__links">
-            {NAV_LINKS.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                end={l.to === "/"}
-                className={({ isActive }) =>
-                  `navbar__link ${isActive ? "navbar__link--active" : ""}`
-                }
-              >
-                {l.label}
-              </NavLink>
-            ))}
-          </div>
+            {/* Center: Desktop Nav */}
+            <nav className="hidden md:flex space-x-8">
+              {NAV_LINKS.map((link) => (
+                <NavLink
+                  key={link.to}
+                  to={link.to}
+                  end={link.to === "/"}
+                  className={({ isActive }) =>
+                    `relative font-medium text-sm transition-colors hover:text-black ${
+                      isActive ? "text-black" : "text-gray-500"
+                    }`
+                  }
+                >
+                  {({ isActive }) => (
+                    <>
+                      {link.label}
+                      {isActive && (
+                        <motion.div
+                          layoutId="navbar-indicator"
+                          className="absolute -bottom-1 left-0 right-0 h-0.5 bg-black"
+                          initial={false}
+                          transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        />
+                      )}
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </nav>
 
-          {/* Actions */}
-          <div className="navbar__actions">
-            {/* ── Cart icon — only shown when logged in ── */}
-            {user && (
-              <Link to="/cart" className="navbar__cart" aria-label="Cart">
-                <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-                  <path
-                    d="M1 1h3l1.6 8h9.8l1.6-5.5H5"
-                    stroke="currentColor"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <circle cx="8" cy="17" r="1.2" fill="currentColor" />
-                  <circle cx="15" cy="17" r="1.2" fill="currentColor" />
-                </svg>
+            {/* Right: Actions */}
+            <div className="flex items-center gap-3 sm:gap-5 z-50">
+              <Link to="/cart" className="relative p-2 text-gray-700 hover:text-black transition-colors">
+                <ShoppingBag size={22} strokeWidth={1.5} />
                 {cartCount > 0 && (
-                  <span className="navbar__cart-badge">{cartCount}</span>
+                  <span className="absolute top-1 right-1 w-4 h-4 bg-black text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {cartCount > 9 ? "9+" : cartCount}
+                  </span>
                 )}
               </Link>
-            )}
 
-            {/* User or Auth */}
-            {user ? (
-              <div className="navbar__user-wrap" ref={dropdownRef}>
-                <button
-                  className="navbar__user-btn"
-                  onClick={() => setDropdownOpen((o) => !o)}
-                >
-                  <div className="navbar__avatar">
-                    {user.profileImage ? (
-                      <img src={user.profileImage} alt="" />
-                    ) : (
-                      initials
-                    )}
-                  </div>
-                  <span className="navbar__user-name">
-                    {user.name.split(" ")[0]}
-                  </span>
-                  <span
-                    className={`navbar__chevron ${dropdownOpen ? "navbar__chevron--open" : ""}`}
+              {user ? (
+                <div className="relative hidden sm:block" ref={dropdownRef}>
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="flex items-center gap-2 p-1 rounded-full border border-gray-200 hover:border-gray-300 transition-colors"
                   >
-                    ▾
-                  </span>
-                </button>
-
-                {dropdownOpen && (
-                  <div className="navbar__dropdown">
-                    <div className="navbar__dropdown-header">
-                      <p className="navbar__dropdown-name">{user.name}</p>
-                      <p className="navbar__dropdown-email">{user.email}</p>
+                    <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center overflow-hidden">
+                      {user.profileImage ? (
+                        <img src={user.profileImage} alt={user.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-xs font-semibold text-gray-600">{initials}</span>
+                      )}
                     </div>
-                    <div className="navbar__dropdown-items">
-                      <Link to="/profile" className="navbar__dropdown-item">
-                        👤 My Profile
+                  </button>
+
+                  <AnimatePresence>
+                    {dropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.15 }}
+                        className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-float py-2"
+                      >
+                        <div className="px-4 py-3 border-b border-gray-100">
+                          <p className="text-sm font-semibold truncate">{user.name}</p>
+                          <p className="text-xs text-gray-500 truncate">{user.email}</p>
+                        </div>
+                        <div className="py-2">
+                          <Link to="/profile" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black">
+                            <User size={16} className="mr-3" /> Profile
+                          </Link>
+                          <Link to="/orders" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black">
+                            <Package size={16} className="mr-3" /> Orders
+                          </Link>
+                          {user.role === "store_owner" && (
+                            <Link to="/dashboard" className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-black">
+                              <Store size={16} className="mr-3" /> Dashboard
+                            </Link>
+                          )}
+                        </div>
+                        <div className="border-t border-gray-100 pt-2 px-2">
+                          <button
+                            onClick={handleLogout}
+                            className="flex items-center w-full px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <LogOut size={16} className="mr-3" /> Logout
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              ) : (
+                <div className="hidden sm:flex items-center gap-4">
+                  <Link to="/login" className="text-sm font-medium hover:text-gray-600 transition-colors">
+                    Login
+                  </Link>
+                  <Link to="/register" className="text-sm font-medium bg-black text-white px-4 py-2 rounded-full hover:bg-gray-800 transition-colors">
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+
+              {/* Hamburger Toggle (Mobile/Tablet) */}
+              <button
+                className="md:hidden p-2 text-gray-700 focus:outline-none"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle menu"
+              >
+                {mobileMenuOpen ? <X size={24} strokeWidth={1.5} /> : <Menu size={24} strokeWidth={1.5} />}
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Sidebar Navigation Drawer */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 md:hidden"
+              onClick={() => setMobileMenuOpen(false)}
+            />
+            <motion.div
+              initial={{ x: "100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "100%" }}
+              transition={{ type: "spring", damping: 25, stiffness: 200 }}
+              className="fixed top-0 right-0 bottom-0 w-[80%] max-w-sm bg-white shadow-2xl z-40 flex flex-col md:hidden pt-20 pb-6 px-6"
+            >
+              <div className="flex flex-col flex-grow space-y-6">
+                <nav className="flex flex-col space-y-4">
+                  {NAV_LINKS.map((link) => (
+                    <NavLink
+                      key={link.to}
+                      to={link.to}
+                      className={({ isActive }) =>
+                        `text-2xl font-heading font-medium transition-colors ${
+                          isActive ? "text-black" : "text-gray-400"
+                        }`
+                      }
+                    >
+                      {link.label}
+                    </NavLink>
+                  ))}
+                </nav>
+
+                <hr className="border-gray-100" />
+
+                <div className="flex flex-col space-y-4">
+                  {user ? (
+                    <>
+                      <Link to="/profile" className="flex items-center text-lg text-gray-600">
+                        <User size={20} className="mr-4" /> Profile
                       </Link>
-                      <Link to="/orders" className="navbar__dropdown-item">
-                        📦 My Orders
-                      </Link>
-                      <Link to="/track-order" className="navbar__dropdown-item">
-                        🔍 Track Order
+                      <Link to="/orders" className="flex items-center text-lg text-gray-600">
+                        <Package size={20} className="mr-4" /> Orders
                       </Link>
                       {user.role === "store_owner" && (
-                        <>
-                          <div className="navbar__dropdown-divider" />
-                          <Link
-                            to="/dashboard"
-                            className="navbar__dropdown-item"
-                          >
-                            🏪 My Store
-                          </Link>
-                        </>
+                        <Link to="/dashboard" className="flex items-center text-lg text-gray-600">
+                          <Store size={20} className="mr-4" /> Dashboard
+                        </Link>
                       )}
-                      <div className="navbar__dropdown-divider" />
-                      <button
-                        onClick={handleLogout}
-                        className="navbar__dropdown-item navbar__dropdown-item--danger"
+                    </>
+                  ) : (
+                    <div className="flex flex-col gap-3 mt-4">
+                      <Link
+                        to="/register"
+                        className="w-full text-center bg-black text-white py-3 rounded-xl font-medium"
                       >
-                        🚪 Logout
-                      </button>
+                        Sign Up Free
+                      </Link>
+                      <Link
+                        to="/login"
+                        className="w-full text-center bg-gray-100 text-black py-3 rounded-xl font-medium"
+                      >
+                        Login to Account
+                      </Link>
                     </div>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            ) : (
-              <div className="navbar__auth">
-                <Link to="/login" className="navbar__login">
-                  Login
-                </Link>
-                <Link to="/register" className="navbar__register">
-                  Sign Up
-                </Link>
-              </div>
-            )}
 
-            {/* Hamburger */}
-            <button
-              className={`navbar__hamburger ${mobileOpen ? "navbar__hamburger--open" : ""}`}
-              onClick={() => setMobileOpen((o) => !o)}
-              aria-label="Menu"
-            >
-              <span />
-              <span />
-              <span />
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      {/* Mobile Menu */}
-      {mobileOpen && (
-        <div className="mobile-menu">
-          <div className="mobile-menu__links">
-            {NAV_LINKS.map((l) => (
-              <NavLink
-                key={l.to}
-                to={l.to}
-                end={l.to === "/"}
-                className={({ isActive }) =>
-                  `mobile-menu__link ${isActive ? "mobile-menu__link--active" : ""}`
-                }
-              >
-                {l.label}
-              </NavLink>
-            ))}
-          </div>
-          <div className="mobile-menu__footer">
-            {user ? (
-              <>
-                {/* Cart link in mobile menu when logged in */}
-                <Link to="/cart" className="mobile-menu__link">
-                  🛒 My Cart {cartCount > 0 && `(${cartCount})`}
-                </Link>
-                <Link to="/profile" className="mobile-menu__link">
-                  👤 My Profile
-                </Link>
-                <Link to="/orders" className="mobile-menu__link">
-                  📦 My Orders
-                </Link>
-                <Link to="/wishlist" className="mobile-menu__link">
-                  ❤️ Wishlist
-                </Link>
-                <button
-                  onClick={handleLogout}
-                  className="mobile-menu__link mobile-menu__link--danger"
-                >
-                  🚪 Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link to="/login" className="mobile-menu__link">
-                  Login
-                </Link>
-                <Link
-                  to="/register"
-                  className="mobile-menu__link mobile-menu__link--cta"
-                >
-                  Sign Up
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+              {user && (
+                <div className="mt-auto pt-6">
+                  <button
+                    onClick={handleLogout}
+                    className="flex text-lg items-center text-red-500 font-medium"
+                  >
+                    <LogOut size={20} className="mr-4" /> Log out
+                  </button>
+                </div>
+              )}
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };
 
 export default Navbar;
+
