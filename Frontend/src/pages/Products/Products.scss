@@ -3,7 +3,9 @@
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 .products-page {
-  background: v.$bg-main;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 14%),
+    v.$bg-main;
   min-height: 100vh;
 }
 
@@ -177,8 +179,8 @@
 }
 
 .filter-sidebar {
-  background: v.$bg-card;
-  border: 1px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-xl;
   padding: v.$sp-6;
   position: sticky;
@@ -198,7 +200,7 @@
     border-radius: 0 v.$r-xl v.$r-xl 0;
     z-index: v.$z-modal;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: v.$shadow-xl;
+    box-shadow: v.$shadow-card;
 
     &--open {
       left: 0;
@@ -426,6 +428,12 @@
   @include m.flex-between;
   gap: v.$sp-3;
   flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-4 v.$sp-5;
+  box-shadow: v.$shadow-xs;
+  backdrop-filter: blur(12px);
 
   &__left {
     @include m.flex(row, center, flex-start, v.$sp-3);
@@ -570,9 +578,9 @@
 
 // ─── PRODUCT CARD ─────────────────────────────────────────────────────────────
 .product-card {
-  background: v.$bg-card;
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
   border-radius: v.$r-lg;
-  border: 1px solid darken(v.$bg-alt, 4%);
+  border: 1px solid v.$border-soft;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -583,8 +591,8 @@
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: v.$shadow-lg;
-    border-color: darken(v.$bg-alt, 10%);
+    box-shadow: v.$shadow-card;
+    border-color: v.$border-strong;
 
     .product-card__img {
       transform: scale(1.05);
@@ -599,7 +607,7 @@
     position: relative;
     aspect-ratio: 3 / 4;
     overflow: hidden;
-    background: v.$bg-alt;
+    background: v.$bg-soft;
   }
 
   &__img {
@@ -818,8 +826,8 @@
   @include m.flex-center;
   cursor: pointer;
   transition: v.$t-fast;
-  box-shadow: v.$shadow-sm;
-  backdrop-filter: blur(4px);
+  box-shadow: v.$shadow-soft;
+  backdrop-filter: blur(10px);
 
   &:hover {
     background: #fff;

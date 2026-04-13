@@ -25,25 +25,10 @@ const Dashboard = lazy(() => import("./pages/Dashboard/Dashboard"));
 const TrackOrder = lazy(() => import("./pages/TrackOrder/TrackOrder"));
 
 const PageLoader = () => (
-  <div
-    style={{
-      minHeight: "100vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "#09090B",
-    }}
-  >
-    <div
-      style={{
-        width: 36,
-        height: 36,
-        border: "3px solid #1A1A1E",
-        borderTopColor: "#FFCF40",
-        borderRadius: "50%",
-        animation: "spin 0.8s linear infinite",
-      }}
-    />
+  <div className="page-loader">
+    <div className="page-loader__orb">
+      <div className="page-loader__spinner" />
+    </div>
   </div>
 );
 
@@ -51,64 +36,68 @@ const App = () => (
   <BrowserRouter>
     <AuthProvider>
       <CartProvider>
-        <CartSyncBridge />
-        <ScrollToTop />
-        <Navbar />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="*" element={<NotFound />} />
-            <Route path="/stores" element={<Stores />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/stores/:slug" element={<StoreDetail />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/stores/:slug" element={<StoreDetail />} />
-            <Route path="/products/:slug" element={<ProductDetail />} />
-            <Route
-              path="/checkout"
-              element={
-                <ProtectedRoute>
-                  <Checkout />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/orders"
-              element={
-                <ProtectedRoute>
-                  <Orders />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/profile"
-              element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/track-order"
-              element={
-                <ProtectedRoute>
-                  <TrackOrder />
-                </ProtectedRoute>
-              }
-            />
-          </Routes>
-        </Suspense>
-        <Footer />
+        <div className="app-shell">
+          <CartSyncBridge />
+          <ScrollToTop />
+          <Navbar />
+          <main className="app-main">
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="*" element={<NotFound />} />
+                <Route path="/stores" element={<Stores />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/stores/:slug" element={<StoreDetail />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/stores/:slug" element={<StoreDetail />} />
+                <Route path="/products/:slug" element={<ProductDetail />} />
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/orders"
+                  element={
+                    <ProtectedRoute>
+                      <Orders />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <Dashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/profile"
+                  element={
+                    <ProtectedRoute>
+                      <Profile />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/track-order"
+                  element={
+                    <ProtectedRoute>
+                      <TrackOrder />
+                    </ProtectedRoute>
+                  }
+                />
+              </Routes>
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
       </CartProvider>
     </AuthProvider>
   </BrowserRouter>

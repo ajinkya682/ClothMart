@@ -112,7 +112,9 @@
 // ─── CART PAGE ────────────────────────────────────────────────────────────────
 .cart-page {
   min-height: 80vh;
-  background: v.$bg-main;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 12%),
+    v.$bg-main;
   padding: v.$sp-8 0 v.$sp-20;
 }
 
@@ -124,8 +126,12 @@
 // ─── HEADER ──────────────────────────────────────────────────────────────────
 .cart-header {
   @include m.flex-between;
-  padding-bottom: v.$sp-4;
-  border-bottom: 1.5px solid darken(v.$bg-alt, 6%);
+  padding: v.$sp-5 v.$sp-6;
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  background: rgba(255, 255, 255, 0.64);
+  box-shadow: v.$shadow-xs;
+  backdrop-filter: blur(12px);
   animation: fadeUp 0.3s ease both;
 
   &__title {
@@ -232,16 +238,16 @@
 // ─── CART ITEM ────────────────────────────────────────────────────────────────
 .cart-item {
   @include m.flex(row, flex-start, flex-start, v.$sp-4);
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-lg;
   padding: v.$sp-4;
   transition: v.$t-base;
   animation: fadeUp 0.4s ease both;
 
   &:hover {
-    border-color: darken(v.$bg-alt, 10%);
-    box-shadow: v.$shadow-sm;
+    border-color: v.$border-strong;
+    box-shadow: v.$shadow-soft;
   }
 
   &--removing {

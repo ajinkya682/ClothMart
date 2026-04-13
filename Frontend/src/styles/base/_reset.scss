@@ -18,14 +18,36 @@ body {
   font-size: 15px;
   font-weight: 400;
   color: v.$text-primary;
-  background: v.$bg-main;
+  background:
+    radial-gradient(circle at top, rgba(255, 207, 64, 0.09), transparent 26%),
+    linear-gradient(180deg, #fcfbf8 0%, v.$bg-main 22%, #f7f4ee 100%);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
 }
 
 a {
   text-decoration: none;
+  color: inherit;
+}
+
+#root {
+  min-height: 100vh;
+  isolation: isolate;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  letter-spacing: -0.02em;
+}
+
+p {
   color: inherit;
 }
 img,
@@ -46,6 +68,19 @@ button {
   font-family: inherit;
   font-size: inherit;
   outline: none;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid rgba(255, 207, 64, 0.95);
+  outline-offset: 2px;
 }
 
 ::selection {

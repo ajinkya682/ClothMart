@@ -2,9 +2,11 @@
 @use "../../styles/base/mixins" as m;
 
 .pd-page {
-  background: v.$bg-main;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 12%),
+    v.$bg-main;
   min-height: 100vh;
-  padding: calc(68px + v.$sp-8) 0 v.$sp-20;
+  padding: calc(74px + v.$sp-8) 0 v.$sp-20;
 }
 .pd-container {
   @include m.container;
@@ -48,10 +50,12 @@
 
   &__main {
     position: relative;
-    border-radius: v.$r-xl;
+    border-radius: 28px;
     overflow: hidden;
-    background: v.$bg-alt;
+    background: linear-gradient(180deg, #fffdf8, v.$bg-soft);
+    border: 1px solid v.$border-soft;
     aspect-ratio: 1;
+    box-shadow: v.$shadow-soft;
   }
 
   &__img {
@@ -112,6 +116,12 @@
 .pd-info {
   @include m.flex(column, stretch, flex-start, v.$sp-5);
   animation: fadeUp 0.4s ease both;
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid v.$border-soft;
+  border-radius: 28px;
+  padding: v.$sp-8;
+  box-shadow: v.$shadow-soft;
+  backdrop-filter: blur(12px);
 
   &__store {
     font-size: 12px;
@@ -195,8 +205,8 @@
     color: v.$text-secondary;
     line-height: 1.8;
     padding: v.$sp-4;
-    background: v.$bg-alt;
-    border-radius: v.$r-md;
+    background: v.$bg-soft;
+    border-radius: v.$r-lg;
     border-left: 3px solid v.$yellow;
   }
 }
@@ -401,8 +411,8 @@
 
 // ─── REVIEW CARD ─────────────────────────────────────────────────────────────
 .pd-review {
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-lg;
   padding: v.$sp-5;
   @include m.flex(column, flex-start, flex-start, v.$sp-3);
@@ -461,8 +471,8 @@
 
 // ─── REVIEW FORM ─────────────────────────────────────────────────────────────
 .pd-review-form {
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-xl;
   padding: v.$sp-6;
   @include m.flex(column, stretch, flex-start, v.$sp-4);

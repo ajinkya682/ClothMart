@@ -3,8 +3,10 @@
 
 .dash-page {
   min-height: 100vh;
-  background: v.$bg-main;
-  padding: calc(68px + v.$sp-6) 0 v.$sp-20;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 12%),
+    v.$bg-main;
+  padding: calc(74px + v.$sp-6) 0 v.$sp-20;
 }
 
 .dash-container {
@@ -17,11 +19,12 @@
   @include m.flex-between;
   flex-wrap: wrap;
   gap: v.$sp-4;
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-xl;
   padding: v.$sp-5 v.$sp-6;
   animation: fadeUp 0.3s ease both;
+  box-shadow: v.$shadow-soft;
 
   &__left {
     @include m.flex(row, center, flex-start, v.$sp-4);
@@ -78,11 +81,13 @@
 // ─── TABS ─────────────────────────────────────────────────────────────────────
 .dash-tabs {
   @include m.flex(row, center, flex-start, v.$sp-2);
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-xl;
   padding: v.$sp-2;
   flex-wrap: wrap;
+  box-shadow: v.$shadow-xs;
+  backdrop-filter: blur(12px);
 }
 
 .dash-tab {
@@ -117,10 +122,11 @@
 
 .dash-panel {
   @include m.flex(column, stretch, flex-start, v.$sp-6);
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-xl;
   padding: v.$sp-6;
+  box-shadow: v.$shadow-soft;
 
   &__head {
     @include m.flex-between;
@@ -147,9 +153,9 @@
 
 .dash-stat {
   @include m.flex(row, center, flex-start, v.$sp-4);
-  background: v.$bg-alt;
+  background: v.$bg-soft;
   border-radius: v.$r-lg;
-  border: 1.5px solid darken(v.$bg-alt, 6%);
+  border: 1px solid v.$border-soft;
   padding: v.$sp-5;
   transition: v.$t-fast;
 
@@ -230,10 +236,10 @@
 // ─── PRODUCT FORM ─────────────────────────────────────────────────────────────
 .dash-product-form {
   @include m.flex(column, stretch, flex-start, v.$sp-5);
-  background: v.$bg-alt;
+  background: v.$bg-soft;
   border-radius: v.$r-lg;
   padding: v.$sp-6;
-  border: 1.5px solid darken(v.$bg-alt, 6%);
+  border: 1px solid v.$border-soft;
   animation: fadeUp 0.25s ease both;
 
   &__title {

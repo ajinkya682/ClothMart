@@ -3,8 +3,10 @@
 
 .track-page {
   min-height: 100vh;
-  background: v.$bg-main;
-  padding: calc(68px + v.$sp-8) 0 v.$sp-20;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 12%),
+    v.$bg-main;
+  padding: calc(74px + v.$sp-8) 0 v.$sp-20;
 }
 
 .track-container {
@@ -59,6 +61,12 @@
 .track-header {
   @include m.flex(column, flex-start, flex-start, v.$sp-3);
   animation: fadeUp 0.3s ease both;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-5 v.$sp-6;
+  box-shadow: v.$shadow-xs;
+  backdrop-filter: blur(12px);
 }
 
 .track-back {
@@ -88,6 +96,11 @@
 .track-search {
   @include m.flex(row, center, flex-start, v.$sp-3);
   animation: fadeUp 0.35s ease both;
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-4;
+  box-shadow: v.$shadow-soft;
 
   @include m.below-sm {
     flex-direction: column;
@@ -98,8 +111,8 @@
     flex: 1;
     position: relative;
     @include m.flex(row, center, flex-start, 0);
-    background: v.$bg-card;
-    border: 1.5px solid darken(v.$bg-alt, 6%);
+    background: v.$bg-soft;
+    border: 1px solid v.$border-soft;
     border-radius: v.$r-md;
     overflow: hidden;
     transition: v.$t-fast;
@@ -217,6 +230,11 @@
 .track-result {
   @include m.flex(column, stretch, flex-start, v.$sp-5);
   animation: fadeUp 0.4s ease both;
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-6;
+  box-shadow: v.$shadow-soft;
 }
 
 // ─── INFO BAR ────────────────────────────────────────────────────────────────

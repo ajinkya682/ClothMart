@@ -3,7 +3,9 @@
 
 // ─── PAGE ─────────────────────────────────────────────────────────────────────
 .stores-page {
-  background: v.$bg-main;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 14%),
+    v.$bg-main;
   min-height: 100vh;
 }
 
@@ -183,11 +185,12 @@
 // ─── CATEGORY PILLS BAR ───────────────────────────────────────────────────────
 .cats-bar {
   background: v.$bg-card;
-  border-bottom: 1px solid darken(v.$bg-alt, 5%);
+  border-bottom: 1px solid v.$border-soft;
   padding-block: v.$sp-3;
   position: sticky;
-  top: 0;
+  top: 74px;
   z-index: v.$z-dropdown;
+  backdrop-filter: blur(14px);
 
   &__scroll {
     @include m.container;
@@ -322,7 +325,7 @@
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: v.$shadow-xl;
+    box-shadow: v.$shadow-card;
 
     .feat-card__bg img {
       transform: scale(1.06);
@@ -466,6 +469,12 @@
   gap: v.$sp-4;
   margin-bottom: v.$sp-8;
   flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-4 v.$sp-5;
+  box-shadow: v.$shadow-xs;
+  backdrop-filter: blur(12px);
 
   &__left {
     @include m.flex(row, baseline, flex-start, v.$sp-3);

@@ -3,8 +3,10 @@
 
 .orders-page {
   min-height: 100vh;
-  background: v.$bg-main;
-  padding: calc(68px + v.$sp-8) 0 v.$sp-20;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent 12%),
+    v.$bg-main;
+  padding: calc(74px + v.$sp-8) 0 v.$sp-20;
 }
 
 .orders-container {
@@ -43,6 +45,12 @@
   @include m.flex-between;
   flex-wrap: wrap;
   gap: v.$sp-4;
+  background: rgba(255, 255, 255, 0.64);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-5 v.$sp-6;
+  box-shadow: v.$shadow-xs;
+  backdrop-filter: blur(12px);
 }
 
 .orders-title {
@@ -74,12 +82,17 @@
 .orders-filters {
   @include m.flex(row, center, flex-start, v.$sp-2);
   flex-wrap: wrap;
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid v.$border-soft;
+  border-radius: v.$r-xl;
+  padding: v.$sp-3;
+  box-shadow: v.$shadow-xs;
 }
 
 .orders-filter {
   @include m.flex(row, center, flex-start, v.$sp-2);
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 6%);
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-full;
   padding: 8px v.$sp-4;
   font-size: 13px;
@@ -122,15 +135,15 @@
 
 // ─── ORDER CARD ───────────────────────────────────────────────────────────────
 .order-card {
-  background: v.$bg-card;
-  border: 1.5px solid darken(v.$bg-alt, 5%);
+  background: linear-gradient(180deg, #ffffff, #fffdf8);
+  border: 1px solid v.$border-soft;
   border-radius: v.$r-xl;
   overflow: hidden;
   transition: v.$t-base;
   animation: fadeUp 0.4s ease both;
 
   &:hover {
-    box-shadow: v.$shadow-sm;
+    box-shadow: v.$shadow-soft;
   }
 
   &--new {

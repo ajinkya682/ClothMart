@@ -19,7 +19,14 @@ $text-light: #d4d4d8;
 $bg-main: #fafaf9;
 $bg-alt: #f3f2ee;
 $bg-card: #ffffff;
+$bg-elevated: #fffcf6;
+$bg-soft: #f8f6f1;
 $bg-dark: #09090b;
+
+$border-soft: rgba(17, 24, 39, 0.08);
+$border-strong: rgba(17, 24, 39, 0.14);
+$glass-light: rgba(255, 255, 255, 0.72);
+$glass-dark: rgba(9, 9, 11, 0.74);
 
 $success: #16a34a;
 $error: #dc2626;
@@ -60,6 +67,8 @@ $shadow-md: 0 6px 24px rgba(0, 0, 0, 0.09);
 $shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.13);
 $shadow-xl: 0 24px 64px rgba(0, 0, 0, 0.18);
 $shadow-yellow: 0 8px 30px rgba(255, 207, 64, 0.35);
+$shadow-soft: 0 10px 30px rgba(17, 24, 39, 0.06);
+$shadow-card: 0 18px 48px rgba(17, 24, 39, 0.08);
 
 // ─── TRANSITIONS ─────────────────────────────────────────────────────────────
 $t-fast: all 0.15s ease;

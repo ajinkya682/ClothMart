@@ -218,20 +218,25 @@
 
 // ─── CARDS ───────────────────────────────────────────────────────────────────
 @mixin card($pad: v.$sp-6) {
-  background: v.$bg-card;
-  border-radius: v.$r-lg;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.96) 0%, #ffffff 100%);
+  border-radius: v.$r-xl;
   padding: $pad;
-  border: 1px solid darken(v.$bg-alt, 4%);
-  box-shadow: v.$shadow-xs;
+  border: 1px solid v.$border-soft;
+  box-shadow: v.$shadow-soft;
   transition: v.$t-base;
 }
 
 @mixin card-hover {
   &:hover {
-    box-shadow: v.$shadow-lg;
-    transform: translateY(-4px);
-    border-color: darken(v.$bg-alt, 10%);
+    box-shadow: v.$shadow-card;
+    transform: translateY(-3px);
+    border-color: v.$border-strong;
   }
+}
+
+@mixin focus-ring($color: rgba(255, 207, 64, 0.22)) {
+  outline: none;
+  box-shadow: 0 0 0 4px $color;
 }
 
 // ─── VISUAL EFFECTS ──────────────────────────────────────────────────────────

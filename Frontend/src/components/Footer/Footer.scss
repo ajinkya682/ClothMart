@@ -2,8 +2,10 @@
 @use "../../styles/base/mixins" as m;
 
 .footer {
-  background: v.$bg-dark;
-  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  background:
+    radial-gradient(circle at top, rgba(255, 207, 64, 0.12), transparent 22%),
+    linear-gradient(180deg, #101012 0%, #09090b 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
 
   &__top {
     @include m.container;
@@ -36,7 +38,7 @@
     width: 34px;
     height: 34px;
     background: v.$yellow;
-    border-radius: v.$r-sm;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -45,6 +47,7 @@
     font-weight: 800;
     color: v.$black;
     flex-shrink: 0;
+    box-shadow: 0 12px 24px rgba(255, 207, 64, 0.22);
   }
 
   &__logo-text {
@@ -57,7 +60,7 @@
 
   &__tagline {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.38);
+    color: rgba(255, 255, 255, 0.56);
     line-height: 1.7;
     max-width: 280px;
     margin-bottom: v.$sp-6;
@@ -71,7 +74,7 @@
   &__social {
     width: 36px;
     height: 36px;
-    border-radius: v.$r-sm;
+    border-radius: 12px;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
@@ -86,6 +89,7 @@
       background: v.$yellow;
       color: v.$black;
       border-color: v.$yellow;
+      transform: translateY(-1px);
     }
   }
 
@@ -107,11 +111,12 @@
 
   &__col-link {
     font-size: 14px;
-    color: rgba(255, 255, 255, 0.48);
+    color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
     transition: v.$t-fast;
     &:hover {
       color: v.$white;
+      transform: translateX(2px);
     }
   }
 
@@ -136,7 +141,7 @@
 
   &__copy {
     font-size: 13px;
-    color: rgba(255, 255, 255, 0.28);
+    color: rgba(255, 255, 255, 0.4);
   }
 
   &__copy-accent {
@@ -150,7 +155,7 @@
 
   &__legal-link {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.28);
+    color: rgba(255, 255, 255, 0.4);
     text-decoration: none;
     transition: v.$t-fast;
     &:hover {

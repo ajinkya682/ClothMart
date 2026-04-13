@@ -7,23 +7,24 @@
   left: 0;
   right: 0;
   z-index: 200;
-  height: 68px;
+  height: 74px;
   background: transparent;
   transition: v.$t-base;
 
   &--scrolled {
-    background: rgba(v.$bg-dark, 0.92);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+    background: rgba(v.$bg-dark, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
   }
 
   &--light {
-    background: rgba(v.$bg-main, 0.96);
-    backdrop-filter: blur(16px);
-    border-bottom: 1px solid darken(v.$bg-alt, 5%);
-    box-shadow: v.$shadow-sm;
+    background: rgba(252, 251, 248, 0.88);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid v.$border-soft;
+    box-shadow: 0 8px 30px rgba(17, 24, 39, 0.06);
 
     .navbar__logo-text {
       color: v.$black;
@@ -61,10 +62,10 @@
   }
 
   &__logo-mark {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     background: v.$yellow;
-    border-radius: v.$r-sm;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,6 +74,7 @@
     font-weight: 800;
     color: v.$black;
     flex-shrink: 0;
+    box-shadow: 0 10px 24px rgba(255, 207, 64, 0.28);
   }
 
   &__logo-text {
@@ -99,22 +101,23 @@
 
   &__link {
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.62);
-    padding: 8px 14px;
-    border-radius: v.$r-sm;
+    padding: 10px 15px;
+    border-radius: 12px;
     text-decoration: none;
     transition: v.$t-fast;
     letter-spacing: 0.01em;
 
     &:hover {
       color: v.$white;
-      background: rgba(33, 33, 33, 0.528);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     &--active {
       color: v.$yellow;
-      background: rgba(255, 207, 64, 0.1);
+      background: rgba(255, 207, 64, 0.12);
+      box-shadow: inset 0 0 0 1px rgba(255, 207, 64, 0.14);
     }
   }
 
@@ -132,11 +135,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 38px;
-    height: 38px;
-    border-radius: v.$r-sm;
-    background: transparent;
-    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     cursor: pointer;
     color: rgba(255, 255, 255, 0.6);
     text-decoration: none;
@@ -144,7 +147,8 @@
 
     &:hover {
       color: v.$white;
-      background: rgba(33, 33, 33, 0.528);
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-1px);
     }
   }
 
@@ -177,8 +181,8 @@
     gap: v.$sp-2;
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: v.$r-sm;
-    padding: 6px 12px 6px 8px;
+    border-radius: 14px;
+    padding: 7px 12px 7px 8px;
     cursor: pointer;
     color: rgba(255, 255, 255, 0.75);
     font-size: 13px;
@@ -188,7 +192,8 @@
 
     &:hover {
       color: v.$white;
-      background: rgba(33, 33, 33, 0.528);
+      background: rgba(255, 255, 255, 0.12);
+      transform: translateY(-1px);
     }
   }
 
@@ -248,16 +253,16 @@
 
   &__login {
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 600;
     color: rgba(255, 255, 255, 0.62);
-    padding: 8px 14px;
-    border-radius: v.$r-sm;
+    padding: 9px 14px;
+    border-radius: 12px;
     text-decoration: none;
     transition: v.$t-fast;
 
     &:hover {
       color: v.$white;
-      background: rgba(33, 33, 33, 0.528);
+      background: rgba(255, 255, 255, 0.08);
     }
 
     @media (max-width: 768px) {
@@ -275,14 +280,15 @@
     font-size: 13px;
     letter-spacing: 0.03em;
     text-transform: uppercase;
-    padding: 8px 18px;
-    border-radius: v.$r-sm;
+    padding: 10px 18px;
+    border-radius: 12px;
     text-decoration: none;
     transition: v.$t-base;
 
     &:hover {
       background: v.$yellow-hover;
       transform: translateY(-1px);
+      box-shadow: v.$shadow-yellow;
     }
   }
 
@@ -293,8 +299,8 @@
     justify-content: center;
     align-items: center;
     gap: 5px;
-    width: 38px;
-    height: 38px;
+    width: 40px;
+    height: 40px;
     background: transparent;
     border: none;
     cursor: pointer;
@@ -307,7 +313,7 @@
     span {
       display: block;
       width: 22px;
-      height: 1.5px;
+      height: 2px;
       background: rgba(255, 255, 255, 0.7);
       border-radius: 2px;
       transition: v.$t-base;
@@ -332,21 +338,22 @@
     position: absolute;
     top: calc(100% + 8px);
     right: 0;
-    width: 210px;
-    background: v.$bg-card;
-    border: 1px solid darken(v.$bg-alt, 6%);
-    border-radius: v.$r-lg;
-    box-shadow: v.$shadow-xl;
+    width: 228px;
+    background: rgba(255, 255, 255, 0.92);
+    border: 1px solid v.$border-soft;
+    border-radius: 20px;
+    box-shadow: 0 24px 60px rgba(17, 24, 39, 0.14);
     overflow: hidden;
     animation: scaleIn 0.18s ease both;
     transform-origin: top right;
     z-index: 100;
+    backdrop-filter: blur(18px);
   }
 
   &__dropdown-header {
     padding: v.$sp-4 v.$sp-5;
-    background: v.$bg-alt;
-    border-bottom: 1px solid darken(v.$bg-alt, 5%);
+    background: linear-gradient(180deg, rgba(255, 248, 220, 0.85), rgba(255, 255, 255, 0.86));
+    border-bottom: 1px solid v.$border-soft;
   }
 
   &__dropdown-name {
@@ -374,7 +381,7 @@
     gap: v.$sp-3;
     width: 100%;
     padding: 10px 12px;
-    border-radius: v.$r-sm;
+    border-radius: 12px;
     font-size: 14px;
     font-family: v.$font-body;
     color: v.$text-secondary;
@@ -386,7 +393,7 @@
     text-align: left;
 
     &:hover {
-      background: v.$bg-alt;
+      background: v.$bg-soft;
       color: v.$text-primary;
     }
 
@@ -408,12 +415,14 @@
 // ── Mobile menu
 .mobile-menu {
   position: fixed;
-  top: 68px;
+  top: 74px;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(v.$bg-dark, 0.97);
-  backdrop-filter: blur(20px);
+  background:
+    linear-gradient(180deg, rgba(9, 9, 11, 0.95), rgba(16, 16, 18, 0.98)),
+    rgba(v.$bg-dark, 0.97);
+  backdrop-filter: blur(24px);
   z-index: 199;
   padding: v.$sp-8 v.$sp-5;
   overflow-y: auto;
@@ -444,7 +453,7 @@
     &:hover,
     &--active {
       color: v.$yellow;
-      background: rgba(255, 207, 64, 0.08);
+      background: rgba(255, 207, 64, 0.1);
     }
     &--danger {
       color: v.$error;

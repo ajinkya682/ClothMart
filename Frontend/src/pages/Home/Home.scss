@@ -8,3 +8,96 @@
   // each section handles its own background and spacing
   // this file only handles the page wrapper
 }
+
+.home-cta {
+  padding: 0 0 v.$sp-24;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent),
+    v.$bg-main;
+
+  &__inner {
+    background:
+      radial-gradient(circle at top right, rgba(255, 207, 64, 0.16), transparent 30%),
+      linear-gradient(180deg, rgba(9, 9, 11, 0.98), rgba(20, 20, 22, 0.98));
+    border-radius: 32px;
+    padding: v.$sp-12;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: v.$shadow-card;
+    display: grid;
+    grid-template-columns: 1.5fr auto;
+    gap: v.$sp-8;
+    align-items: center;
+
+    @include m.below-md {
+      grid-template-columns: 1fr;
+      padding: v.$sp-8;
+    }
+  }
+
+  &__label {
+    @include m.label;
+    color: v.$yellow;
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 12px;
+    border-radius: v.$r-full;
+    background: rgba(255, 207, 64, 0.12);
+    border: 1px solid rgba(255, 207, 64, 0.18);
+    margin-bottom: v.$sp-4;
+  }
+
+  &__title {
+    @include m.display(44px);
+    color: v.$white-pure;
+    line-height: 1;
+    max-width: 760px;
+
+    @include m.below-md {
+      font-size: 34px;
+    }
+  }
+
+  &__text {
+    margin-top: v.$sp-4;
+    max-width: 620px;
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255, 255, 255, 0.62);
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    gap: v.$sp-3;
+
+    @include m.below-md {
+      width: 100%;
+    }
+  }
+
+  &__primary,
+  &__secondary {
+    min-width: 220px;
+    justify-content: center;
+
+    @include m.below-md {
+      min-width: 100%;
+    }
+  }
+
+  &__primary {
+    @include m.btn-primary;
+  }
+
+  &__secondary {
+    @include m.btn-outline;
+    color: v.$white;
+    border-color: rgba(255, 255, 255, 0.14);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.24);
+      color: v.$white;
+    }
+  }
+}

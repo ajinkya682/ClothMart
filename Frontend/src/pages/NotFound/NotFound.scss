@@ -6,11 +6,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: v.$bg-dark;
+  background:
+    radial-gradient(circle at top, rgba(255, 207, 64, 0.16), transparent 24%),
+    linear-gradient(180deg, #09090b 0%, #121215 100%);
 
   &__inner {
     text-align: center;
     padding: v.$sp-10;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 32px;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.22);
+    backdrop-filter: blur(16px);
   }
 
   &__code {
@@ -46,7 +53,7 @@
     text-transform: uppercase;
     letter-spacing: 0.04em;
     padding: 14px 32px;
-    border-radius: v.$r-sm;
+    border-radius: 12px;
     text-decoration: none;
     transition: v.$t-base;
 

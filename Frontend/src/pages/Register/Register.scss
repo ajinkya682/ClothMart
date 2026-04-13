@@ -6,6 +6,7 @@
   min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  padding-top: 74px;
 
   @include m.below-lg {
     grid-template-columns: 1fr;
@@ -75,7 +76,9 @@
   }
 
   &--right {
-    background: v.$bg-main;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.22), transparent 18%),
+      v.$bg-main;
     overflow-y: auto;
     display: flex;
     align-items: flex-start;
@@ -175,6 +178,12 @@
   width: 100%;
   max-width: 480px;
   @include m.flex(column, stretch, flex-start, v.$sp-6);
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid v.$border-soft;
+  border-radius: 28px;
+  padding: v.$sp-8;
+  box-shadow: v.$shadow-card;
+  backdrop-filter: blur(14px);
 }
 
 // ─── TOP BAR ─────────────────────────────────────────────────────────────────
