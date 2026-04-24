@@ -1,66 +1,67 @@
 import { Link } from "react-router-dom";
-import { FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
 const COLS = [
   {
-    title: "Shop",
+    title: "Atelier",
     links: [
-      { to: "/products", label: "All Products" },
-      { to: "/products?category=saree", label: "Sarees" },
-      { to: "/products?category=kurti", label: "Kurtis" },
-      { to: "/products?category=mens", label: "Mens Wear" },
-      { to: "/products?category=kids", label: "Kids Wear" },
+      { to: "/products", label: "Collections" },
+      { to: "/products?category=men", label: "Men" },
+      { to: "/products?category=women", label: "Women" },
+      { to: "/products?category=accessories", label: "Accessories" },
     ],
   },
   {
-    title: "Stores",
+    title: "Explore",
     links: [
-      { to: "/stores", label: "All Stores" },
-      { to: "/register", label: "List My Store" },
+      { to: "/stores", label: "Flagships" },
+      { to: "/wishlist", label: "Archive" },
+      { to: "/cart", label: "Bag" },
     ],
   },
   {
-    title: "Account",
+    title: "Insight",
     links: [
-      { to: "/login", label: "Login" },
-      { to: "/register", label: "Register" },
-      { to: "/profile", label: "My Profile" },
-      { to: "/orders", label: "My Orders" },
+      { to: "/profile", label: "Profile" },
+      { to: "/orders", label: "History" },
+      { to: "/track-order", label: "Logistics" },
     ],
   },
 ];
 
 const Footer = () => (
-  <footer className="bg-black text-white border-t border-gray-900 mt-auto">
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-        <div className="lg:col-span-2 space-y-6">
-          <Link to="/" className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white text-black rounded-lg flex items-center justify-center font-heading font-black text-xl tracking-tighter">C</div>
-            <span className="font-bold font-heading text-2xl tracking-tight">ClothMart</span>
+  <footer className="bg-primary text-white pt-32 pb-12 border-t border-white/5">
+    <div className="max-w-7xl mx-auto px-6 sm:px-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-20 lg:gap-12 mb-32">
+        <div className="lg:col-span-2 flex flex-col items-start">
+          <Link to="/" className="group mb-10">
+            <span className="font-display text-4xl font-extrabold tracking-tighter text-white transition-all duration-500 group-hover:tracking-normal group-hover:text-accent">
+              CLOTHMART<span className="text-accent group-hover:text-white transition-colors duration-500">.</span>
+            </span>
           </Link>
-          <p className="text-gray-400 text-sm leading-relaxed max-w-sm">
-            India's cloth stores — now online. Discover local stores, browse thousands of premium products, and shop with absolute confidence.
+          <p className="text-white/40 text-[13px] font-light leading-relaxed max-w-sm mb-12 italic">
+            "Elevating the digital atelier experience through curated craft, timeless design, and white-glove service."
           </p>
-          <div className="flex gap-4">
-            <a href="#" className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">
-              <FaTwitter size={18} />
-            </a>
-            <a href="#" className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">
-              <FaInstagram size={18} />
-            </a>
-            <a href="#" className="w-10 h-10 rounded-full bg-gray-900 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-800 transition-colors">
-              <FaLinkedin size={18} />
-            </a>
+          <div className="flex gap-8">
+            {["Instagram", "X (Twitter)", "Vogue"].map(social => (
+              <a key={social} href="#" className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/30 hover:text-accent transition-colors">
+                {social}
+              </a>
+            ))}
           </div>
         </div>
 
         {COLS.map((col) => (
           <div key={col.title}>
-            <p className="font-bold text-white mb-6 uppercase tracking-widest text-sm">{col.title}</p>
-            <nav className="flex flex-col gap-4">
+            <p className="text-[10px] font-bold text-accent mb-10 uppercase tracking-[0.3em]">
+              {col.title}
+            </p>
+            <nav className="flex flex-col gap-6">
               {col.links.map((l) => (
-                <Link to={l.to} key={l.label} className="text-gray-400 text-sm hover:text-white hover:translate-x-1 transition-all">
+                <Link
+                  to={l.to}
+                  key={l.label}
+                  className="text-white/50 text-[11px] font-bold uppercase tracking-widest hover:text-white hover:translate-x-2 transition-all duration-500"
+                >
                   {l.label}
                 </Link>
               ))}
@@ -68,16 +69,17 @@ const Footer = () => (
           </div>
         ))}
       </div>
-    </div>
 
-    <div className="border-t border-gray-900">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
-        <p className="text-gray-500 text-xs text-center md:text-left">
-          © {new Date().getFullYear()} <span className="font-bold text-white tracking-wide">ClothMart</span>. Built by Ajinkya Saivar · Sambhajinagar, Maharashtra.
+      <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-8">
+        <p className="text-white/20 text-[9px] font-bold uppercase tracking-[0.2em] text-center md:text-left">
+          © {new Date().getFullYear()} ClothMart Digital Atelier. Crafted for Distinction.
         </p>
-        <div className="flex items-center gap-6 text-xs text-gray-500">
-          <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-          <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+        <div className="flex items-center gap-12">
+          {["Privacy", "Terms", "Shipping"].map(item => (
+            <a key={item} href="#" className="text-white/20 text-[9px] font-bold uppercase tracking-[0.2em] hover:text-white transition-colors">
+              {item}
+            </a>
+          ))}
         </div>
       </div>
     </div>

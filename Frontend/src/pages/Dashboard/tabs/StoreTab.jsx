@@ -105,7 +105,7 @@ export default function StoreTab({ store, setStore }) {
               <label className="block text-sm font-semibold text-gray-900 mb-2">Store Logo(1:1)</label>
               <label className="relative block w-32 h-32 rounded-full border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-black transition-colors group">
                 {previewLogo ? (
-                  <img src={previewLogo} alt="Logo" className="w-full h-full object-cover" />
+                  <img src={previewLogo} alt="Logo" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = "https://ui-avatars.com/api/?name=Store&background=random"; }} />
                 ) : (
                   <div className="w-full h-full bg-gray-50 flex items-center justify-center">
                     <ImagePlus className="text-gray-400" size={24} />
@@ -122,7 +122,7 @@ export default function StoreTab({ store, setStore }) {
               <label className="block text-sm font-semibold text-gray-900 mb-2">Store Banner (3:1)</label>
               <label className="relative block w-full h-32 rounded-2xl border-2 border-dashed border-gray-300 overflow-hidden cursor-pointer hover:border-black transition-colors group">
                 {previewBanner ? (
-                  <img src={previewBanner} alt="Banner" className="w-full h-full object-cover" />
+                  <img src={previewBanner} alt="Banner" className="w-full h-full object-cover" onError={(e) => { e.target.onerror = null; e.target.src = "https://placehold.co/1200x400?text=No+Banner"; }} />
                 ) : (
                   <div className="w-full h-full bg-gray-50 flex items-center justify-center">
                     <ImagePlus className="text-gray-400" size={24} />

@@ -7,9 +7,13 @@ export default {
   theme: {
     extend: {
       colors: {
-        primary: "#000000",
-        secondary: "#FFFFFF",
-        accent: "#d6bfa7",
+        primary: "#0E0E0E",
+        accent: "#C8A96A",
+        background: "#FAFAF8",
+        surface: "#FFFFFF",
+        "surface-low": "#F5F5F0",
+        "surface-lowest": "#FFFFFF",
+        "on-background": "#111111",
         gray: {
           50: '#f9fafb',
           100: '#f3f4f6',
@@ -20,12 +24,13 @@ export default {
           600: '#4b5563',
           700: '#374151',
           800: '#1f2937',
-          900: '#111827',
+          900: '#111111',
         }
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
-        heading: ['Poppins', 'system-ui', 'sans-serif'],
+        heading: ['Manrope', 'system-ui', 'sans-serif'],
+        display: ['Manrope', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         sm: "6px",
@@ -34,8 +39,8 @@ export default {
         xl: "24px"
       },
       boxShadow: {
-        soft: '0 4px 20px rgba(0, 0, 0, 0.05)',
-        float: '0 10px 30px rgba(0, 0, 0, 0.08)'
+        soft: '0 20px 40px rgba(27, 28, 25, 0.06)',
+        float: '0 20px 40px rgba(27, 28, 25, 0.06)'
       },
       keyframes: {
         'fade-in': {
